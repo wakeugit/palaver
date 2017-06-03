@@ -20,96 +20,58 @@ import mobile.paluno.de.palaver.controller.PalaverLoginActivity;
 
 public class HttpRequest {
 
-        public JSONObject benutzerRegistrieren(String username, String password) throws Exception{
-
-            JSONObject response = new JSONObject();
-
-            URL url=new URL("http://palaver.se.paluno.uni-due.de/api/user/register");
-            HttpURLConnection httpcon=(HttpURLConnection)url.openConnection();
-            httpcon.setDoOutput(true);
-            httpcon.setRequestMethod("POST");
-            httpcon.setRequestProperty("Accept", "application/json");
-            httpcon.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-
-            //String urlParameters = "{\"Username\":\"wilfried\",\"Password\":\"wilfried\"}"; // It's your JSON-array
+        public JSONObject verbindungHerstellen(String _url, String username, String password) throws Exception{
+            //Benutzer in JSON Form anlegen und Passwort übergeben
             JSONObject json = new JSONObject();
 
             try {
                 json.put("Username", username);
                 json.put("Password", password);
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
+            //HTTP Verbindung herstellen und an Server "POST"en
+            URL url=new URL(_url);
+            HttpURLConnection httpcon=(HttpURLConnection)url.openConnection();
+            httpcon.setDoOutput(true);
+            httpcon.setRequestMethod("POST");
+            //httpcon.setRequestProperty("Accept", "application/json");
+            httpcon.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 
-
+            //Request als Outputstream des JSON Strings in Bytes
             OutputStream os = httpcon.getOutputStream();
             os.write(json.toString().getBytes("UTF-8"));
             os.close();
 
+            //Antwort  als Inputstream und umwandeln in JSON String
             InputStream is = httpcon.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            // get output from the server
-            String line = null;
+            JSONObject response = new JSONObject();
+            String line;
             while((line = br.readLine() ) != null) {
-
                 try {
-                    response=new JSONObject(line);
+                    response = new JSONObject(line);
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
 
             }
+
             httpcon.disconnect();
 
             return response;
         }
 
-    public JSONObject benutzerpasswortValidate(String username, String password) throws Exception{
-
-        JSONObject response = new JSONObject();
-
-        URL url=new URL("http://palaver.se.paluno.uni-due.de/api/user/validate");
-        HttpURLConnection httpcon=(HttpURLConnection)url.openConnection();
-        httpcon.setDoOutput(true);
-        httpcon.setRequestMethod("POST");
-        httpcon.setRequestProperty("Accept", "application/json");
-        httpcon.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-
-        JSONObject json = new JSONObject();
-
-        try {
-            json.put("Username", username);
-            json.put("Password", password);
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        public JSONObject benutzerRegistrieren(String username, String password) throws Exception{
+            return verbindungHerstellen("http://palaver.se.paluno.uni-due.de/api/user/register",
+                    username, password);
         }
 
-
-        OutputStream os = httpcon.getOutputStream();
-        os.write(json.toString().getBytes("UTF-8"));
-        os.close();
-
-        InputStream is = httpcon.getInputStream();
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-        // get output from the server
-        String line = null;
-        while((line = br.readLine() ) != null) {
-
-            try {
-                response=new JSONObject(line);
-            } catch (JSONException e){
-                e.printStackTrace();
-            }
-
-        }
-        httpcon.disconnect();
-
-        return response;
-    }
+        public JSONObject benutzerValidate(String username, String password) throws Exception{
+            return verbindungHerstellen("http://palaver.se.paluno.uni-due.de/api/user/validate",
+                    username, password);
+         }
 
 
 

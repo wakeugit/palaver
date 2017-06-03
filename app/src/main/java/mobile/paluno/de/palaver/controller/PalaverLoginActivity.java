@@ -121,12 +121,21 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        // Testen ob PW eingegeben wurde
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError("Dieses Feld muss ausgefüllt sein");
             focusView = mPasswordView;
             cancel = true;
         }
+
+        // Ist das Passwort richtig?
+        if (!isPasswordValid(password)) {
+            mPasswordView.setError("Passwort zu kurz");
+            focusView = mPasswordView;
+            cancel = true;
+        }
+
+
 
         // Check for a valid username address.
         if (TextUtils.isEmpty(username)) {
@@ -261,32 +270,40 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
 
         private final String mUsername;
         private final String mPassword;
-        JSONObject res= new JSONObject();
+        private JSONObject res= new JSONObject();
 
         UserLoginTask(String username, String password) {
             mUsername = username;
             mPassword = password;
         }
 
+        public JSONObject getRes() {
+            return res;
+        }
+
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
+            //Verbindung herstellen mit Palavaer Server
             HttpRequest httpRequest = new HttpRequest();
 
             try {
-                // Simulate network access.
-                res= httpRequest.benutzerpasswortValidate(mUsername, mPassword);
-
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                // Antwort des Palaver Servers
+                res = httpRequest.benutzerValidate(mUsername, mPassword);
+                //Thread.sleep(2000);
+            } catch (Exception e) {
                 return false;
-            } catch (Exception e){
-                e.printStackTrace();
             }
 
-            // TODO: register the new account here.
-            return true;
+            int msgType = 0;
+            try{
+                msgType = res.getInt("MsgType");
+            }
+            catch (Exception e){
+                return false;
+            }
+            if(msgType == 1) return true;
+
+            return false;
         }
 
         @Override
@@ -300,12 +317,29 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
+
+                //Erfolgreiche Verbidung, navigieren weiter
                 Intent intent = new Intent(PalaverLoginActivity.this, PalaverMainActivity.class);
                 startActivity(intent);
                 finish();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+
+                //Herausstellen von Fehlern
+                String info = "";
+                try {
+                    info = res.getString("Info");
+                } catch (Exception e) {
+                    e.printStackTrace();;
+                }
+                if(info.equals("Passwort nicht korrekt")) {
+                    mPasswordView.setError(info);
+                    mPasswordView.requestFocus();
+                } else if (info.equals("Benutzer existiert nicht")) {
+                    mUsernameView.setError(info);
+                    mUsernameView.requestFocus();
+                }
+                else
+                    Toast.makeText(PalaverLoginActivity.this, "Fehler", Toast.LENGTH_LONG).show();
             }
         }
 

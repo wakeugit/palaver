@@ -266,12 +266,11 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-
             HttpRequest httpRequest = new HttpRequest();
 
             try {
                 // Simulate network access.
-                res= httpRequest.benutzerRegistrieren(mUsername, mPassword);
+                res = httpRequest.benutzerRegistrieren(mUsername, mPassword);
 
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
