@@ -1,5 +1,8 @@
 package mobile.paluno.de.palaver.controller;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -43,16 +46,44 @@ public class PalaverMainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton addContact=(FloatingActionButton)findViewById(R.id.addContact);
-        //addContact.setVisibility(View.INVISIBLE);
+        String userName = getIntent().getStringExtra("Username").toUpperCase();
+        TextView t = (TextView)findViewById(R.id.tbUsername);
+        t.setText(userName);
 
 
+        //Der Kontakt Hinzufügen Button, soll nur im Kontakte Tab zu sehen sein
+        final FloatingActionButton addContact=(FloatingActionButton)findViewById(R.id.addContact);
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager){
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                super.onTabSelected(tab);
+                if(tab.getPosition() == 1)
+                    addContact.setVisibility(View.VISIBLE);
+                else
+                    addContact.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     private void setupViewPager(ViewPager viewPager){
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ContactsFragment(), "CONTACTS");
         adapter.addFragment(new ChatsFragment(), "CHATS");
+        adapter.addFragment(new ContactsFragment(), "KONTAKTE");
         viewPager.setAdapter(adapter);
 
     }

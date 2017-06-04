@@ -3,7 +3,9 @@ package mobile.paluno.de.palaver.controller;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -97,8 +99,24 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
         mProgressView = findViewById(R.id.login_progress);
     }
 
+    private void save(String username, String password){
+        SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.putString("Username", username);
+        editor.putString("Password", password);
+        editor.commit();
+    }
 
+    private String loadUsername(){
+        SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        return sharedPreferences.getString("Username", null);
+    }
 
+    private String loadPassword(){
+        SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        return sharedPreferences.getString("Password", null);
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -320,6 +338,7 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
 
                 //Erfolgreiche Verbidung, navigieren weiter
                 Intent intent = new Intent(PalaverLoginActivity.this, PalaverMainActivity.class);
+                intent.putExtra("Username", mUsername);
                 startActivity(intent);
                 finish();
             } else {

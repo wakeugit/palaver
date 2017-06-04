@@ -78,8 +78,13 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
         mProgressView = findViewById(R.id.register_progress);
     }
 
-
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(PalaverRegisterActivity.this, PalaverLoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
     /**
      * Attempts to sign in or register the account specified by the register form.
@@ -271,12 +276,9 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
             try {
                 // Simulate network access.
                 res = httpRequest.benutzerRegistrieren(mUsername, mPassword);
-
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                //Thread.sleep(2000);
+            } catch (Exception e) {
                 return false;
-            } catch (Exception e){
-                e.printStackTrace();
             }
 
             // TODO: register the new account here.
