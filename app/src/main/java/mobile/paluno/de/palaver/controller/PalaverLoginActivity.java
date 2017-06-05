@@ -56,6 +56,11 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private CheckBox mStaySigned;
+
+    //Speichern und übergeben von Daten an andere Aktivitäten
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +69,8 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
         // Set up the login form.
         mUsernameView = (EditText) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);
+
+
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -75,8 +82,6 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
             }
         });
 
-        CheckBox mStaySigned =(CheckBox) findViewById(R.id.staySignIn);
-        //TODO:implement the the Stay Signed Option
         Button mUserRegisterInButton = (Button) findViewById(R.id.user_register_button);
         mUserRegisterInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -100,22 +105,40 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
     }
 
     private void save(String username, String password){
-        SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor = sharedPreferences.edit();
+
+        mStaySigned =(CheckBox) findViewById(R.id.staySignIn);
+
         editor.clear();
         editor.putString("Username", username);
         editor.putString("Password", password);
+        editor.putBoolean("Checked", mStaySigned.isChecked());
         editor.commit();
     }
 
     private String loadUsername(){
-        SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
         return sharedPreferences.getString("Username", null);
     }
 
     private String loadPassword(){
-        SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
         return sharedPreferences.getString("Password", null);
+    }
+
+    @Override
+    protected void onResume() {
+
+        sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        Boolean isChecked = sharedPreferences.getBoolean("Checked", false);
+        Boolean mainResume = sharedPreferences.getBoolean("MainLaden", false);
+
+        if(isChecked || mainResume){
+            mUsernameView.setText(loadUsername());
+            mPasswordView.setText(loadPassword());
+
+            attemptLogin();
+        }
+
+        super.onResume();
     }
 
     /**
@@ -330,15 +353,15 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
             showProgress(false);
 
             if (success) {
-                try{
-                    Toast.makeText(PalaverLoginActivity.this, res.getString("Info"), Toast.LENGTH_LONG).show();
-                } catch (JSONException e){
-                    e.printStackTrace();
-                }
+//                try{
+//                    Toast.makeText(PalaverLoginActivity.this, res.getString("Info"), Toast.LENGTH_LONG).show();
+//                } catch (JSONException e){
+//                    e.printStackTrace();
+//                }
 
                 //Erfolgreiche Verbidung, navigieren weiter
                 Intent intent = new Intent(PalaverLoginActivity.this, PalaverMainActivity.class);
-                intent.putExtra("Username", mUsername);
+                save(mUsername, mPassword);
                 startActivity(intent);
                 finish();
             } else {
