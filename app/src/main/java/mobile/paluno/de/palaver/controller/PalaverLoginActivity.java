@@ -169,22 +169,9 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
             cancel = true;
         }
 
-        // Ist das Passwort richtig?
-        if (!isPasswordValid(password)) {
-            mPasswordView.setError("Passwort zu kurz");
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-
-
-        // Check for a valid username address.
+        // Username eingegeben?
         if (TextUtils.isEmpty(username)) {
-            mUsernameView.setError(getString(R.string.error_field_required));
-            focusView = mUsernameView;
-            cancel = true;
-        } else if (!isUsernameValid(username)) {
-            mUsernameView.setError(getString(R.string.error_invalid_username));
+            mUsernameView.setError("Dieses Feld muss ausgefüllt sein");
             focusView = mUsernameView;
             cancel = true;
         }
@@ -202,23 +189,6 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
             mAuthTask = new UserLoginTask(username, password);
             mAuthTask.execute((Void) null);
         }
-    }
-
-    private boolean isUsernameValid(String username) {
-        //TODO: Replace this with your own logic
-        String special="[!@#$%&*()_+=|<>?{}\\[\\]~-]";
-        if(username.length()>4){
-            for (int i=0; i< username.length(); i++){
-                if(special.contains(""+username.charAt(i)))
-                    return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
 
     /**
@@ -330,8 +300,8 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
             try {
                 // Antwort des Palaver Servers
                 res = httpRequest.benutzerValidate(mUsername, mPassword);
-                //Thread.sleep(2000);
             } catch (Exception e) {
+                //Wenn hier nicht klappt JSON Fehler oder kein Internet
                 return false;
             }
 
@@ -342,6 +312,7 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
             catch (Exception e){
                 return false;
             }
+
             if(msgType == 1) return true;
 
             return false;
@@ -353,12 +324,6 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
             showProgress(false);
 
             if (success) {
-//                try{
-//                    Toast.makeText(PalaverLoginActivity.this, res.getString("Info"), Toast.LENGTH_LONG).show();
-//                } catch (JSONException e){
-//                    e.printStackTrace();
-//                }
-
                 //Erfolgreiche Verbidung, navigieren weiter
                 Intent intent = new Intent(PalaverLoginActivity.this, PalaverMainActivity.class);
                 save(mUsername, mPassword);
@@ -371,7 +336,7 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
                 try {
                     info = res.getString("Info");
                 } catch (Exception e) {
-                    e.printStackTrace();;
+                    e.printStackTrace();
                 }
                 if(info.equals("Passwort nicht korrekt")) {
                     mPasswordView.setError(info);

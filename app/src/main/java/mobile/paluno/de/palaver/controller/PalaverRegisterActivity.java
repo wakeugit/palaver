@@ -55,7 +55,7 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
         mUsernameView = (EditText) findViewById(R.id.username_register);
         mPasswordView = (EditText) findViewById(R.id.password_register);
         mPasswordConfirmView = (EditText) findViewById(R.id.password_confirm);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mPasswordConfirmView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.register || id == EditorInfo.IME_NULL) {
@@ -66,7 +66,7 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
             }
         });
 
-        Button mUserRegisterButton = (Button) findViewById(R.id.user_sign_in_button);
+        Button mUserRegisterButton = (Button) findViewById(R.id.user_register_button);
         mUserRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,31 +110,28 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError("Dieses Feld muss ausgefüllt sein");
             focusView = mPasswordView;
             cancel = true;
         }
 
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password_confirm)) {
-            mPasswordConfirmView.setError(getString(R.string.error_invalid_password));
+        if (TextUtils.isEmpty(password_confirm)) {
+            mPasswordConfirmView.setError("Dieses Feld muss ausgefüllt sein");
             focusView = mPasswordConfirmView;
             cancel = true;
         }
 
+        //Prüfen ob Passwörter gleich sind
         if (!password.equals(password_confirm)){
-            mPasswordConfirmView.setError(getString(R.string.error_not_matching_password));
+            mPasswordConfirmView.setError("Passwörter stimmen nicht überein");
             focusView = mPasswordConfirmView;
             cancel = true;
         }
 
         // Check for a valid username address.
         if (TextUtils.isEmpty(username)) {
-            mUsernameView.setError(getString(R.string.error_field_required));
-            focusView = mUsernameView;
-            cancel = true;
-        } else if (!isUsernameValid(username)) {
-            mUsernameView.setError(getString(R.string.error_invalid_username));
+            mUsernameView.setError("Dieses Feld muss ausgefüllt sein");
             focusView = mUsernameView;
             cancel = true;
         }
@@ -152,23 +149,6 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
             mRegisterTask = new UserRegisterTask(username, password);
             mRegisterTask.execute((Void) null);
         }
-    }
-
-    private boolean isUsernameValid(String username) {
-        //TODO: Replace this with your own logic
-        String special="[!@#$%&*()_+=|<>?{}\\[\\]~-]";
-        if(username.length()>4){
-            for (int i=0; i< username.length(); i++){
-                if(special.contains(""+username.charAt(i)))
-                    return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
 
     /**
@@ -261,7 +241,7 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
 
         private final String mUsername;
         private final String mPassword;
-        JSONObject res= new JSONObject();
+        private JSONObject res= new JSONObject();
 
         UserRegisterTask(String username, String password) {
             mUsername = username;
@@ -270,19 +250,28 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+            //Verbindung herstellen mit Palavaer Server
             HttpRequest httpRequest = new HttpRequest();
 
             try {
-                // Simulate network access.
+                // Antwort des Palaver Servers
                 res = httpRequest.benutzerRegistrieren(mUsername, mPassword);
-                //Thread.sleep(2000);
             } catch (Exception e) {
+                //Wenn hier nicht klappt JSON Fehler oder kein Internet
                 return false;
             }
 
-            // TODO: register the new account here.
-            return true;
+            int msgType = 0;
+            try{
+                msgType = res.getInt("MsgType");
+            }
+            catch (Exception e){
+                return false;
+            }
+
+            if(msgType == 1) return true;
+
+            return false;
         }
 
         @Override
@@ -296,12 +285,11 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
-                Intent intent = new Intent(PalaverRegisterActivity.this, PalaverMainActivity.class);
+                Intent intent = new Intent(PalaverRegisterActivity.this, PalaverLoginActivity.class);
                 startActivity(intent);
                 finish();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                Toast.makeText(PalaverRegisterActivity.this, "Fehler", Toast.LENGTH_LONG).show();
             }
         }
 
