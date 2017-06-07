@@ -3,7 +3,9 @@ package mobile.paluno.de.palaver.controller;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -54,6 +56,11 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private CheckBox mStaySigned;
+
+    //Speichern und übergeben von Daten an andere Aktivitäten
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +69,8 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
         // Set up the login form.
         mUsernameView = (EditText) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);
+
+
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -73,8 +82,6 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
             }
         });
 
-        CheckBox mStaySigned =(CheckBox) findViewById(R.id.staySignIn);
-        //TODO:implement the the Stay Signed Option
         Button mUserRegisterInButton = (Button) findViewById(R.id.user_register_button);
         mUserRegisterInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -97,8 +104,42 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
         mProgressView = findViewById(R.id.login_progress);
     }
 
+    private void save(String username, String password){
+        editor = sharedPreferences.edit();
 
+        mStaySigned =(CheckBox) findViewById(R.id.staySignIn);
 
+        editor.clear();
+        editor.putString("Username", username);
+        editor.putString("Password", password);
+        editor.putBoolean("Checked", mStaySigned.isChecked());
+        editor.commit();
+    }
+
+    private String loadUsername(){
+        return sharedPreferences.getString("Username", null);
+    }
+
+    private String loadPassword(){
+        return sharedPreferences.getString("Password", null);
+    }
+
+    @Override
+    protected void onResume() {
+
+        sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        Boolean isChecked = sharedPreferences.getBoolean("Checked", false);
+        Boolean mainResume = sharedPreferences.getBoolean("MainLaden", false);
+
+        if(isChecked || mainResume){
+            mUsernameView.setText(loadUsername());
+            mPasswordView.setText(loadPassword());
+
+            attemptLogin();
+        }
+
+        super.onResume();
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -121,20 +162,16 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        // Testen ob PW eingegeben wurde
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError("Dieses Feld muss ausgefüllt sein");
             focusView = mPasswordView;
             cancel = true;
         }
 
-        // Check for a valid username address.
+        // Username eingegeben?
         if (TextUtils.isEmpty(username)) {
-            mUsernameView.setError(getString(R.string.error_field_required));
-            focusView = mUsernameView;
-            cancel = true;
-        } else if (!isUsernameValid(username)) {
-            mUsernameView.setError(getString(R.string.error_invalid_username));
+            mUsernameView.setError("Dieses Feld muss ausgefüllt sein");
             focusView = mUsernameView;
             cancel = true;
         }
@@ -152,23 +189,6 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
             mAuthTask = new UserLoginTask(username, password);
             mAuthTask.execute((Void) null);
         }
-    }
-
-    private boolean isUsernameValid(String username) {
-        //TODO: Replace this with your own logic
-        String special="[!@#$%&*()_+=|<>?{}\\[\\]~-]";
-        if(username.length()>4){
-            for (int i=0; i< username.length(); i++){
-                if(special.contains(""+username.charAt(i)))
-                    return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
 
     /**
@@ -261,32 +281,41 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
 
         private final String mUsername;
         private final String mPassword;
-        JSONObject res= new JSONObject();
+        private JSONObject res= new JSONObject();
 
         UserLoginTask(String username, String password) {
             mUsername = username;
             mPassword = password;
         }
 
+        public JSONObject getRes() {
+            return res;
+        }
+
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
+            //Verbindung herstellen mit Palavaer Server
             HttpRequest httpRequest = new HttpRequest();
 
             try {
-                // Simulate network access.
-                res= httpRequest.benutzerpasswortValidate(mUsername, mPassword);
-
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                // Antwort des Palaver Servers
+                res = httpRequest.benutzerValidate(mUsername, mPassword);
+            } catch (Exception e) {
+                //Wenn hier nicht klappt JSON Fehler oder kein Internet
                 return false;
-            } catch (Exception e){
-                e.printStackTrace();
             }
 
-            // TODO: register the new account here.
-            return true;
+            int msgType = 0;
+            try{
+                msgType = res.getInt("MsgType");
+            }
+            catch (Exception e){
+                return false;
+            }
+
+            if(msgType == 1) return true;
+
+            return false;
         }
 
         @Override
@@ -295,17 +324,29 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
             showProgress(false);
 
             if (success) {
-                try{
-                    Toast.makeText(PalaverLoginActivity.this, res.getString("Info"), Toast.LENGTH_LONG).show();
-                } catch (JSONException e){
-                    e.printStackTrace();
-                }
+                //Erfolgreiche Verbidung, navigieren weiter
                 Intent intent = new Intent(PalaverLoginActivity.this, PalaverMainActivity.class);
+                save(mUsername, mPassword);
                 startActivity(intent);
                 finish();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+
+                //Herausstellen von Fehlern
+                String info = "";
+                try {
+                    info = res.getString("Info");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if(info.equals("Passwort nicht korrekt")) {
+                    mPasswordView.setError(info);
+                    mPasswordView.requestFocus();
+                } else if (info.equals("Benutzer existiert nicht")) {
+                    mUsernameView.setError(info);
+                    mUsernameView.requestFocus();
+                }
+                else
+                    Toast.makeText(PalaverLoginActivity.this, "Fehler", Toast.LENGTH_LONG).show();
             }
         }
 

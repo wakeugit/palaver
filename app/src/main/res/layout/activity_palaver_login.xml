@@ -1,12 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
     android:focusable="true"
     android:focusableInTouchMode="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -36,7 +35,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="200dp"
-                android:src="@drawable/palaver_logo"/>
+                android:src="@drawable/palaver_logo" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -46,10 +45,9 @@
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_username"
+                    android:hint="Benutzername"
                     android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                    android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -61,13 +59,12 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_password"
+                    android:hint="Passwort"
                     android:imeActionId="@+id/login"
-                    android:imeActionLabel="@string/action_sign_in"
+                    android:imeActionLabel="Anmelden"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                    android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -75,39 +72,71 @@
                 android:id="@+id/staySignIn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/prompt_stay_sign"
                 android:layout_marginTop="16dp"
                 android:checked="true"
-                />
+                android:text="Angemeldet bleiben" />
 
-        <LinearLayout
-            android:id="@+id/button_login_register"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Button
-                android:id="@+id/user_register_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="150dp"
+            <!--<LinearLayout-->
+            <!--android:id="@+id/button_login_register"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<Button-->
+            <!--android:id="@+id/user_register_button"-->
+            <!--style="?android:textAppearanceSmall"-->
+            <!--android:layout_width="170dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginRight="5dp"-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:background="@color/colorPrimary"-->
+            <!--android:text="@string/action_register"-->
+            <!--android:textColor="@color/colorButton"-->
+            <!--android:textStyle="bold" />-->
+
+            <!--<Button-->
+            <!--android:id="@+id/user_sign_in_button"-->
+            <!--style="?android:textAppearanceSmall"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="5dp"-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:background="@color/colorPrimary"-->
+            <!--android:text="@string/action_sign_in"-->
+            <!--android:textColor="@color/colorButton"-->
+            <!--android:textStyle="bold" />-->
+            <!--</LinearLayout>-->
+
+            <RelativeLayout
+                android:id="@+id/button_login_register"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="20dp"
-                android:text="@string/action_register"
-                android:background="@color/colorPrimary"
-                android:textStyle="bold"
-                android:textColor="@color/colorButton"/>
-            <Button
-                android:id="@+id/user_sign_in_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="20dp"
-                android:text="@string/action_sign_in"
-                android:background="@color/colorPrimary"
-                android:textStyle="bold"
-                android:textColor="@color/colorButton"/>
-        </LinearLayout>
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/user_register_button"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="167dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/colorPrimary"
+                    android:text="Registrieren"
+                    android:textColor="@color/colorButton"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/user_sign_in_button"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="167dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_toRightOf="@id/user_register_button"
+                    android:background="@color/colorPrimary"
+                    android:text="Anmelden"
+                    android:textColor="@color/colorButton"
+                    android:textStyle="bold" />
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 
