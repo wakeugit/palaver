@@ -23,11 +23,14 @@ import android.util.MalformedJsonException;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +47,7 @@ import mobile.paluno.de.palaver.backend.HttpRequest;
 /**
  * A login screen that offers login via email/password.
  */
-public class PalaverLoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class PalaverLoginActivity extends AppCompatActivity{
 
     /*
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -66,6 +69,10 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_palaver_login);
+
+        //Animation Splash
+        startAnimation();
+
         // Set up the login form.
         mUsernameView = (EditText) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -87,8 +94,8 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PalaverLoginActivity.this, PalaverRegisterActivity.class);
+                moveTaskToBack(true);
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -102,6 +109,59 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    public void startAnimation() {
+        final ImageView imageView = (ImageView) findViewById(R.id.palaver_logo);
+        //TODO:
+        //Position muss in der Mitte des Bildschirms starten, hier provisorisch 300
+        imageView.setY(300);
+        Animation fadeInAnim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in_animation);
+        fadeInAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                findViewById(R.id.username).setVisibility(View.GONE);
+                findViewById(R.id.password).setVisibility(View.GONE);
+                findViewById(R.id.staySignIn).setVisibility(View.INVISIBLE);
+                findViewById(R.id.user_register_button).setVisibility(View.INVISIBLE);
+                findViewById(R.id.user_sign_in_button).setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Animation slideUpAnim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_up);
+
+                slideUpAnim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        findViewById(R.id.username).setVisibility(View.VISIBLE);
+                        findViewById(R.id.password).setVisibility(View.VISIBLE);
+                        findViewById(R.id.staySignIn).setVisibility(View.VISIBLE);
+                        findViewById(R.id.user_register_button).setVisibility(View.VISIBLE);
+                        findViewById(R.id.user_sign_in_button).setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                imageView.startAnimation(slideUpAnim);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        imageView.startAnimation(fadeInAnim);
     }
 
     private void save(String username, String password){
@@ -164,14 +224,14 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
 
         // Testen ob PW eingegeben wurde
         if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError("Dieses Feld muss ausgefüllt sein");
+            mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
         }
 
         // Username eingegeben?
         if (TextUtils.isEmpty(username)) {
-            mUsernameView.setError("Dieses Feld muss ausgefüllt sein");
+            mUsernameView.setError(getString(R.string.error_field_required));
             focusView = mUsernameView;
             cancel = true;
         }
@@ -227,51 +287,51 @@ public class PalaverLoginActivity extends AppCompatActivity implements LoaderCal
         }
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        /*List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            //emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);*/
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
-
-
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
+//    @Override
+//    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+//        return null;/*new CursorLoader(this,
+//                // Retrieve data rows for the device user's 'profile' contact.
+//                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
+//                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
+//
+//                // Select only email addresses.
+//                ContactsContract.Contacts.Data.MIMETYPE +
+//                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
+//                .CONTENT_ITEM_TYPE},
+//
+//                // Show primary email addresses first. Note that there won't be
+//                // a primary email address if the user hasn't specified one.
+//                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");*/
+//    }
+//
+//    @Override
+//    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+//        /*List<String> emails = new ArrayList<>();
+//        cursor.moveToFirst();
+//        while (!cursor.isAfterLast()) {
+//            //emails.add(cursor.getString(ProfileQuery.ADDRESS));
+//            cursor.moveToNext();
+//        }
+//
+//        addEmailsToAutoComplete(emails);*/
+//    }
+//
+//    @Override
+//    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+//
+//    }
+////
+////
+////
+////    private interface ProfileQuery {
+////        String[] PROJECTION = {
+////                ContactsContract.CommonDataKinds.Email.ADDRESS,
+////                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
+////        };
+////
+////        int ADDRESS = 0;
+////        int IS_PRIMARY = 1;
+////    }
 
     /**
      * Represents an asynchronous login/registration task used to authenticate

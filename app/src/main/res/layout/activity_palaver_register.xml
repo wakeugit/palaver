@@ -46,9 +46,9 @@
                     android:id="@+id/username_register"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Benutzername"
+                    android:hint="@string/prompt_username"
                     android:inputType="text"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -60,7 +60,7 @@
                     android:id="@+id/password_register"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Passwort"
+                    android:hint="@string/prompt_password"
                     android:inputType="textPassword"
                     android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
@@ -68,16 +68,17 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <EditText
                     android:id="@+id/password_confirm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Passwort wiederholen"
+                    android:hint="@string/prompt_password_confirm"
                     android:imeActionId="@+id/register"
                     android:imeActionLabel="Registrieren"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -88,10 +89,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Registrieren"
                 android:background="@color/colorPrimary"
-                android:textStyle="bold"
-                android:textColor="@color/colorButton"/>
+                android:text="@string/action_register"
+                android:textColor="@color/colorButton"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </ScrollView>
