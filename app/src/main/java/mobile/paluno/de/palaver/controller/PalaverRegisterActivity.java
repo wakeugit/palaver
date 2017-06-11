@@ -33,7 +33,7 @@ import mobile.paluno.de.palaver.backend.HttpRequest;
 /**
  * A login screen that offers login via email/password.
  */
-public class PalaverRegisterActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class PalaverRegisterActivity extends AppCompatActivity /*implements LoaderCallbacks<Cursor> */{
 
     /*
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -47,9 +47,14 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
     private View mProgressView;
     private View mRegisterFormView;
 
+    // Fehlerbehandlung beim Anmelden
+    private Boolean usernameInUse;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setUsernameInUse(false);
+
         setContentView(R.layout.activity_palaver_register);
         // Set up the registration form.
         mUsernameView = (EditText) findViewById(R.id.username_register);
@@ -86,6 +91,20 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
         finish();
     }
 
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        setUsernameInUse(false);
+//    }
+
+    public Boolean getUsernameInUse() {
+        return usernameInUse;
+    }
+
+    public void setUsernameInUse(Boolean usernameInUse) {
+        this.usernameInUse = usernameInUse;
+    }
+
     /**
      * Attempts to sign in or register the account specified by the register form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -94,6 +113,15 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
     private void attemptRegister() {
         if (mRegisterTask != null) {
             return;
+        }
+
+        View focusView = null;
+        boolean cancel = false;
+
+        if (getUsernameInUse()) {
+            mUsernameView.setError(getString(R.string.error_existing_username_register));
+            focusView = mUsernameView;
+            cancel = true;
         }
 
         // Reset errors.
@@ -106,32 +134,35 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
         String password = mPasswordView.getText().toString();
         String password_confirm = mPasswordConfirmView.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
-
         // Check for a valid password, if the user entered one.
         if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError("Dieses Feld muss ausgefüllt sein");
+            mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
         }
 
         if (TextUtils.isEmpty(password_confirm)) {
-            mPasswordConfirmView.setError("Dieses Feld muss ausgefüllt sein");
+            mPasswordConfirmView.setError(getString(R.string.error_field_required));
             focusView = mPasswordConfirmView;
             cancel = true;
         }
 
         //Prüfen ob Passwörter gleich sind
         if (!password.equals(password_confirm)){
-            mPasswordConfirmView.setError("Passwörter stimmen nicht überein");
+            mPasswordConfirmView.setError(getString(R.string.error_not_matching_password));
             focusView = mPasswordConfirmView;
             cancel = true;
         }
 
         // Check for a valid username address.
         if (TextUtils.isEmpty(username)) {
-            mUsernameView.setError("Dieses Feld muss ausgefüllt sein");
+            mUsernameView.setError(getString(R.string.error_field_required));
+            focusView = mUsernameView;
+            cancel = true;
+        }
+
+        if(getUsernameInUse()){
+            mUsernameView.setError(getString(R.string.error_existing_username_register));
             focusView = mUsernameView;
             cancel = true;
         }
@@ -187,51 +218,51 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
         }
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        /*List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            //emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);*/
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
-
-
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
+//    @Override
+//    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+//        return new CursorLoader(this,
+//                // Retrieve data rows for the device user's 'profile' contact.
+//                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
+//                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
+//
+//                // Select only email addresses.
+//                ContactsContract.Contacts.Data.MIMETYPE +
+//                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
+//                .CONTENT_ITEM_TYPE},
+//
+//                // Show primary email addresses first. Note that there won't be
+//                // a primary email address if the user hasn't specified one.
+//                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
+//    }
+//
+//    @Override
+//    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+//        /*List<String> emails = new ArrayList<>();
+//        cursor.moveToFirst();
+//        while (!cursor.isAfterLast()) {
+//            //emails.add(cursor.getString(ProfileQuery.ADDRESS));
+//            cursor.moveToNext();
+//        }
+//
+//        addEmailsToAutoComplete(emails);*/
+//    }
+//
+//    @Override
+//    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+//
+//    }
+//
+//
+//
+//    private interface ProfileQuery {
+//        String[] PROJECTION = {
+//                ContactsContract.CommonDataKinds.Email.ADDRESS,
+//                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
+//        };
+//
+//        int ADDRESS = 0;
+//        int IS_PRIMARY = 1;
+//    }
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
@@ -269,8 +300,13 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
                 return false;
             }
 
-            if(msgType == 1) return true;
-
+            if(msgType == 1) {
+                setUsernameInUse(false);
+                return true;
+            }
+            else if(msgType == 0){
+                setUsernameInUse(true);
+            }
             return false;
         }
 
@@ -289,7 +325,16 @@ public class PalaverRegisterActivity extends AppCompatActivity implements Loader
                 startActivity(intent);
                 finish();
             } else {
-                Toast.makeText(PalaverRegisterActivity.this, "Fehler", Toast.LENGTH_LONG).show();
+                try {
+                    if(res.getInt("MsgType") == 0){
+                        setUsernameInUse(true);
+                        mUsernameView.setError(getString(R.string.error_existing_username_register));
+                        mUsernameView.requestFocus();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+//                Toast.makeText(PalaverRegisterActivity.this, "Fehler", Toast.LENGTH_LONG).show();
             }
         }
 

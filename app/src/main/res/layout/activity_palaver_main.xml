@@ -50,7 +50,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_toRightOf="@+id/tbUsername"
                     android:background="@null"
-                    android:text="Abmelden" />
+                    android:text="@string/action_sign_out" />
 
             </RelativeLayout>
 

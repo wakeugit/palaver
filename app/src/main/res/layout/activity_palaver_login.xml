@@ -33,6 +33,7 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/palaver_logo"
                 android:layout_width="wrap_content"
                 android:layout_height="200dp"
                 android:src="@drawable/palaver_logo" />
@@ -45,7 +46,7 @@
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Benutzername"
+                    android:hint="@string/prompt_username"
                     android:inputType="text"
                     android:maxLines="1" />
 
@@ -59,9 +60,9 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Passwort"
+                    android:hint="@string/prompt_password"
                     android:imeActionId="@+id/login"
-                    android:imeActionLabel="Anmelden"
+                    android:imeActionLabel="@string/action_register"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1" />
@@ -74,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:checked="true"
-                android:text="Angemeldet bleiben" />
+                android:text="@string/prompt_stay_sign" />
 
             <!--<LinearLayout-->
             <!--android:id="@+id/button_login_register"-->
