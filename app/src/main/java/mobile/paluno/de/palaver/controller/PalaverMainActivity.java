@@ -135,7 +135,7 @@ public class PalaverMainActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager){
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
         adapter.addFragment(new ChatsFragment(), "CHATS");
-        adapter.addFragment(new ContactsFragment(), "KONTAKTE");
+        adapter.addFragment(new ContactsFragment(), "FREUNDE");
         viewPager.setAdapter(adapter);
     }
 }

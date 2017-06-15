@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.AsyncTask;
@@ -12,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -58,9 +60,9 @@ public class PalaverLoginActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_palaver_login);
 
-        Intent intent = new Intent(PalaverLoginActivity.this, PalaverAuthActivity.class);
-        startActivity(intent);
-        finish();
+//        Intent intent = new Intent(PalaverLoginActivity.this, PalaverAuthActivity.class);
+//        startActivity(intent);
+//        finish();
 
         //Animation Splash
         startAnimation();
@@ -107,7 +109,11 @@ public class PalaverLoginActivity extends AppCompatActivity{
         final ImageView imageView = (ImageView) findViewById(R.id.palaver_logo);
         //TODO:
         //Position muss in der Mitte des Bildschirms starten, hier provisorisch 300
-        imageView.setY(300);
+        Display display = getWindowManager().getDefaultDisplay();
+        final Point size = new Point();
+        display.getSize(size);
+        float centerY=size.y/2;
+        imageView.setY(centerY);
         Animation fadeInAnim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in_animation);
         fadeInAnim.setAnimationListener(new Animation.AnimationListener() {
             @Override
