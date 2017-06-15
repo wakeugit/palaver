@@ -34,8 +34,6 @@ public class ChatsFragment extends Fragment {
                 android.R.layout.simple_list_item_1, last_chats);
         mListView.setAdapter(adapter);
 
-
-
         return view;
     }
 }

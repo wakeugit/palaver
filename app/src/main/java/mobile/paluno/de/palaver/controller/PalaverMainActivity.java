@@ -84,21 +84,21 @@ public class PalaverMainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        super.onResume();
+        sharedPreferences = getSharedPreferences("mobile.paluno.de.palaver.login", MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        String userName = sharedPreferences.getString("Username", null);
+        String userName = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
         TextView t = (TextView)findViewById(R.id.tbUsername);
         t.setText(userName.toUpperCase());
 
-        super.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         if(!checkAbmelden) {
-            editor.putBoolean("MainLaden", true);
+            editor.putBoolean("mobile.paluno.de.palaver.MainLaden", true);
             editor.commit();
         }
 
@@ -114,7 +114,7 @@ public class PalaverMainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(!sharedPreferences.getBoolean("Checked", false)){
+        if(!sharedPreferences.getBoolean("mobile.paluno.de.palaver.Checked", false)){
             abmelden();
         }
 //        Toast.makeText(PalaverMainActivity.this, "onDestroy()", Toast.LENGTH_LONG).show();
@@ -137,9 +137,5 @@ public class PalaverMainActivity extends AppCompatActivity {
         adapter.addFragment(new ChatsFragment(), "CHATS");
         adapter.addFragment(new ContactsFragment(), "KONTAKTE");
         viewPager.setAdapter(adapter);
-
     }
-
-
-
 }

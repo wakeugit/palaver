@@ -1,27 +1,25 @@
 package mobile.paluno.de.palaver.controller;
 
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
-
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,11 +28,13 @@ import org.json.JSONObject;
 import mobile.paluno.de.palaver.R;
 import mobile.paluno.de.palaver.backend.HttpRequest;
 
-/**
- * A login screen that offers login via email/password.
- */
-public class PalaverLoginActivity extends AppCompatActivity{
+import static android.content.Context.MODE_PRIVATE;
 
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class SignInFragment extends Fragment {
+    ViewGroup container;
     /*
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -51,24 +51,39 @@ public class PalaverLoginActivity extends AppCompatActivity{
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-
+    public SignInFragment() {
+        // Required empty public constructor
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_palaver_login);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        this.container = container;
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_signin, container, false);
+    }
 
-        Intent intent = new Intent(PalaverLoginActivity.this, PalaverAuthActivity.class);
-        startActivity(intent);
-        finish();
+    @Override
+    public void onResume() {
+        super.onResume();
 
-        //Animation Splash
-        startAnimation();
+        sharedPreferences = getContext().getSharedPreferences("mobile.paluno.de.palaver.login", MODE_PRIVATE);
+        mLoginFormView = container.findViewById(R.id.login_form);
+        mProgressView  = container.findViewById(R.id.login_progress);
+
+        Boolean isChecked = sharedPreferences.getBoolean("mobile.paluno.de.palaver.Checked", false);
+        Boolean mainResume = sharedPreferences.getBoolean("mobile.paluno.de.palaver.MainLaden", false);
 
         // Set up the login form.
-        mUsernameView = (EditText) findViewById(R.id.username);
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mUsernameView = (EditText) container.findViewById(R.id.username_signin);
+        mPasswordView = (EditText) container.findViewById(R.id.password_signin);
 
+        if(isChecked || mainResume){
+            mUsernameView.setText(loadUsername());
+            mPasswordView.setText(loadPassword());
+
+            attemptLogin();
+        }
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -81,123 +96,35 @@ public class PalaverLoginActivity extends AppCompatActivity{
             }
         });
 
-        Button mUserRegisterInButton = (Button) findViewById(R.id.user_register_button);
-        mUserRegisterInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(PalaverLoginActivity.this, PalaverRegisterActivity.class);
-                moveTaskToBack(true);
-                startActivity(intent);
-            }
-        });
-
-        Button mUserSignInButton = (Button) findViewById(R.id.user_sign_in_button);
-        mUserSignInButton.setOnClickListener(new OnClickListener() {
+        Button mUserSignInButton = (Button) container.findViewById(R.id.user_sign_in_button);
+        mUserSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-    }
+        Button mRegisterButton = (Button) container.findViewById(R.id.register_fragment_button);
 
-    public void startAnimation() {
-        final ImageView imageView = (ImageView) findViewById(R.id.palaver_logo);
-        //TODO:
-        //Position muss in der Mitte des Bildschirms starten, hier provisorisch 300
-        imageView.setY(300);
-        Animation fadeInAnim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in_animation);
-        fadeInAnim.setAnimationListener(new Animation.AnimationListener() {
+        mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-                findViewById(R.id.username).setVisibility(View.GONE);
-                findViewById(R.id.password).setVisibility(View.GONE);
-                findViewById(R.id.staySignIn).setVisibility(View.INVISIBLE);
-                findViewById(R.id.user_register_button).setVisibility(View.INVISIBLE);
-                findViewById(R.id.user_sign_in_button).setVisibility(View.INVISIBLE);
-            }
+            public void onClick(View v) {
+                // Create fragment and give it an argument specifying the article it should show
+                RegisterFragment registerFragment = new RegisterFragment();
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                Animation slideUpAnim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_up);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                // Replace whatever is in the fragment_container view with this fragment,
+                // and add the transaction to the back stack so the user can navigate back
+                transaction.replace(R.id.fragment_auth_container, registerFragment);
+                transaction.addToBackStack(null);
 
-                slideUpAnim.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        findViewById(R.id.username).setVisibility(View.VISIBLE);
-                        findViewById(R.id.password).setVisibility(View.VISIBLE);
-                        findViewById(R.id.staySignIn).setVisibility(View.VISIBLE);
-                        findViewById(R.id.user_register_button).setVisibility(View.VISIBLE);
-                        findViewById(R.id.user_sign_in_button).setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-
-                imageView.startAnimation(slideUpAnim);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
+                // Commit the transaction
+                transaction.commit();
             }
         });
-
-        imageView.startAnimation(fadeInAnim);
     }
 
-    private void save(String username, String password){
-        editor = sharedPreferences.edit();
 
-        mStaySigned =(CheckBox) findViewById(R.id.staySignIn);
-
-        editor.clear();
-        editor.putString("Username", username);
-        editor.putString("Password", password);
-        editor.putBoolean("Checked", mStaySigned.isChecked());
-        editor.commit();
-    }
-
-    private String loadUsername(){
-        return sharedPreferences.getString("Username", null);
-    }
-
-    private String loadPassword(){
-        return sharedPreferences.getString("Password", null);
-    }
-
-    @Override
-    protected void onResume() {
-
-        sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
-        Boolean isChecked = sharedPreferences.getBoolean("Checked", false);
-        Boolean mainResume = sharedPreferences.getBoolean("MainLaden", false);
-
-        if(isChecked || mainResume){
-            mUsernameView.setText(loadUsername());
-            mPasswordView.setText(loadPassword());
-
-            attemptLogin();
-        }
-
-        super.onResume();
-    }
-
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;
@@ -243,6 +170,25 @@ public class PalaverLoginActivity extends AppCompatActivity{
         }
     }
 
+    private void save(String username, String password){
+        editor = sharedPreferences.edit();
+
+        mStaySigned =(CheckBox) container.findViewById(R.id.staySignIn);
+
+        editor.clear();
+        editor.putString("mobile.paluno.de.palaver.Username", username);
+        editor.putString("mobile.paluno.de.palaver.Password", password);
+        editor.putBoolean("mobile.paluno.de.palaver.Checked", mStaySigned.isChecked());
+        editor.commit();
+    }
+
+    private String loadUsername(){
+        return sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
+    }
+
+    private String loadPassword(){
+        return sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
+    }
     /**
      * Shows the progress UI and hides the login form.
      */
@@ -279,56 +225,6 @@ public class PalaverLoginActivity extends AppCompatActivity{
         }
     }
 
-//    @Override
-//    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-//        return null;/*new CursorLoader(this,
-//                // Retrieve data rows for the device user's 'profile' contact.
-//                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-//                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-//
-//                // Select only email addresses.
-//                ContactsContract.Contacts.Data.MIMETYPE +
-//                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-//                .CONTENT_ITEM_TYPE},
-//
-//                // Show primary email addresses first. Note that there won't be
-//                // a primary email address if the user hasn't specified one.
-//                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");*/
-//    }
-//
-//    @Override
-//    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-//        /*List<String> emails = new ArrayList<>();
-//        cursor.moveToFirst();
-//        while (!cursor.isAfterLast()) {
-//            //emails.add(cursor.getString(ProfileQuery.ADDRESS));
-//            cursor.moveToNext();
-//        }
-//
-//        addEmailsToAutoComplete(emails);*/
-//    }
-//
-//    @Override
-//    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-//
-//    }
-////
-////
-////
-////    private interface ProfileQuery {
-////        String[] PROJECTION = {
-////                ContactsContract.CommonDataKinds.Email.ADDRESS,
-////                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-////        };
-////
-////        int ADDRESS = 0;
-////        int IS_PRIMARY = 1;
-////    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mUsername;
@@ -376,11 +272,12 @@ public class PalaverLoginActivity extends AppCompatActivity{
             showProgress(false);
 
             if (success) {
+                System.out.println(getActivity());
                 //Erfolgreiche Verbidung, navigieren weiter
-                Intent intent = new Intent(PalaverLoginActivity.this, PalaverMainActivity.class);
+                Intent intent = new Intent(getActivity(), PalaverMainActivity.class);
                 save(mUsername, mPassword);
                 startActivity(intent);
-                finish();
+                getActivity().finish();
             } else {
 
                 //Herausstellen von Fehlern
@@ -397,8 +294,8 @@ public class PalaverLoginActivity extends AppCompatActivity{
                     mUsernameView.setError(info);
                     mUsernameView.requestFocus();
                 }
-                else
-                    Toast.makeText(PalaverLoginActivity.this, "Fehler", Toast.LENGTH_LONG).show();
+                else ;
+                    Toast.makeText(getActivity(), "Fehler", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -409,4 +306,3 @@ public class PalaverLoginActivity extends AppCompatActivity{
         }
     }
 }
-
