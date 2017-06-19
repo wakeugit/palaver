@@ -73,6 +73,65 @@ public class HttpRequest {
                     username, password);
          }
 
+        public JSONObject freundVerwalten(String _url, String username, String password, String friend) throws Exception{
+
+            JSONObject json = new JSONObject();
+
+            try {
+                json.put("Username", username);
+                json.put("Password", password);
+                if (friend!=null) {
+                    json.put("Friend", friend);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            //HTTP Verbindung herstellen und an Server "POST"en
+            URL url=new URL(_url);
+            HttpURLConnection httpcon=(HttpURLConnection)url.openConnection();
+            httpcon.setDoOutput(true);
+            httpcon.setRequestMethod("POST");
+            //httpcon.setRequestProperty("Accept", "application/json");
+            httpcon.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+
+            //Request als Outputstream des JSON Strings in Bytes
+            OutputStream os = httpcon.getOutputStream();
+            os.write(json.toString().getBytes("UTF-8"));
+            os.close();
+
+            //Antwort  als Inputstream und umwandeln in JSON String
+            InputStream is = httpcon.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            JSONObject response = new JSONObject();
+            String line;
+            while((line = br.readLine() ) != null) {
+                try {
+                    response = new JSONObject(line);
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+
+            }
+
+            httpcon.disconnect();
+
+            return response;
+        }
+
+        public JSONObject freundHinzufuegen(String username, String password, String friend) throws Exception{
+            return freundVerwalten("http://palaver.se.paluno.uni-due.de/api/friends/add", username, password, friend);
+        }
+
+        public JSONObject freundLoeschen(String username, String password, String friend) throws Exception{
+            return freundVerwalten("http://palaver.se.paluno.uni-due.de/api/friends/delete", username, password, friend);
+        }
+
+        public JSONObject getFreundListe(String username, String password) throws Exception{
+            return freundVerwalten("http://palaver.se.paluno.uni-due.de/api/friends/get", username, password, null);
+        }
+
+
 
 
 

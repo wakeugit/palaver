@@ -31,6 +31,8 @@ import mobile.paluno.de.palaver.R;
 public class PalaverMainActivity extends AppCompatActivity {
     private static final String TAG = "PalaverMainActivity";
 
+
+
     private SectionsPageAdapter mSectionsPageAdapter;
 
     private ViewPager mViewPager;
@@ -42,6 +44,7 @@ public class PalaverMainActivity extends AppCompatActivity {
     //Ist der Button Abmelden gedrückt worden?
     //Dafür da, damit onPause nicht MainLaden auf true setzt
     private Boolean checkAbmelden = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,15 @@ public class PalaverMainActivity extends AppCompatActivity {
 
         //Der Kontakt Hinzufügen Button, soll nur im Kontakte Tab zu sehen sein
         final FloatingActionButton addContact=(FloatingActionButton)findViewById(R.id.addContact);
+        addContact.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(PalaverMainActivity.this, NewContactActivity.class);
+                startActivity(intent);
+
+            }
+
+        });
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager){
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -134,8 +146,9 @@ public class PalaverMainActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager){
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
+
         adapter.addFragment(new ChatsFragment(), "CHATS");
-        adapter.addFragment(new ContactsFragment(), "KONTAKTE");
+        adapter.addFragment(new ContactsFragment("wilfried", "wilfried"), "KONTAKTE");
         viewPager.setAdapter(adapter);
 
     }

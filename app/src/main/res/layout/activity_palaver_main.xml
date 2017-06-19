@@ -38,7 +38,7 @@
                     android:text="username"
                     android:textAlignment="viewStart"
                     android:textColor="@android:color/white"
-                    android:textSize="16sp"
+                    android:textSize="20dp"
                     app:textAllCaps="true" />
 
                 <Button
@@ -50,7 +50,9 @@
                     android:layout_centerHorizontal="true"
                     android:layout_toRightOf="@+id/tbUsername"
                     android:background="@null"
-                    android:text="@string/action_sign_out" />
+                    android:drawableRight="@drawable/ic_keyboard_tab_white_24dp"/>
+
+
 
             </RelativeLayout>
 

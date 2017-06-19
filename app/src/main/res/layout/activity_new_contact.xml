@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="mobile.paluno.de.palaver.controller.NewContactActivity">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/appbar_height"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/tbTitel"
+                    android:drawableLeft="@drawable/ic_keyboard_arrow_left_white_18dp"
+                    android:layout_alignParentLeft="true"
+
+                    android:background="@null"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tbTitel"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:fontFamily="sanf-serif-medium"
+                    android:text="@string/label_add_friend"
+                    android:textAlignment="viewStart"
+                    android:gravity="start"
+                    android:textColor="@android:color/white"
+                    android:textSize="20dp"
+                    app:textAllCaps="true" />
+
+                <Button
+                    android:id="@+id/btAbmelden"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@+id/tbTitel"
+                    android:drawableRight="@drawable/ic_keyboard_tab_white_24dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_alignParentRight="true"
+                    android:background="@null"/>
+
+            </RelativeLayout>
+
+
+        </android.support.v7.widget.Toolbar>
+
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="8dp">
+
+        <EditText
+            android:id="@+id/contact_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:layout_margin="8dp"
+            android:maxLines="1"
+            android:hint="@string/prompt_contact_name"/>
+        <Button
+            android:id="@+id/hinzufuefen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_add_friend"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/colorButton"
+            android:textStyle="bold"
+            />
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

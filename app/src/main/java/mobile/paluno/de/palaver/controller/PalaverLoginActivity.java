@@ -368,6 +368,7 @@ public class PalaverLoginActivity extends AppCompatActivity{
             int msgType = 0;
             try{
                 msgType = res.getInt("MsgType");
+
             }
             catch (Exception e){
                 return false;
@@ -385,6 +386,11 @@ public class PalaverLoginActivity extends AppCompatActivity{
 
             if (success) {
                 //Erfolgreiche Verbidung, navigieren weiter
+                try {
+                    Toast.makeText(PalaverLoginActivity.this, res.getString("Info"), Toast.LENGTH_LONG).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 Intent intent = new Intent(PalaverLoginActivity.this, PalaverMainActivity.class);
                 save(mUsername, mPassword);
                 startActivity(intent);
