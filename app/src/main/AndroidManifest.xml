@@ -18,6 +18,11 @@
         <activity
             android:name=".controller.PalaverLoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity
+            android:name=".controller.PalaverAuthActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,10 +35,12 @@
         <activity
             android:name=".controller.PalaverMainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".controller.NewContactActivity"
             android:theme="@style/AppTheme.NoActionBar" >
 
         </activity>
+
     </application>
 
 </manifest>
