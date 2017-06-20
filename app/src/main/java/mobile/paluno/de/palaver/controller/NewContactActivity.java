@@ -124,6 +124,7 @@ public class NewContactActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
                 finish();
             } else {
 
@@ -131,7 +132,7 @@ public class NewContactActivity extends AppCompatActivity {
                 String info = "";
                 try {
                     info = res.getString("Info");
-                    System.out.println(info);
+                    
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

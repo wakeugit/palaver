@@ -372,7 +372,7 @@ public class PalaverLoginActivity extends AppCompatActivity{
             catch (Exception e){
                 return false;
             }
-
+            //Login ok
             if(msgType == 1) return true;
 
             return false;

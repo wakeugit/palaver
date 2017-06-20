@@ -1,6 +1,7 @@
 package mobile.paluno.de.palaver.controller;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import mobile.paluno.de.palaver.R;
@@ -40,37 +43,59 @@ public class ContactsFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_contacts, container, false);
         mListView=(ListView) view.findViewById(R.id.listContacts) ;
-        Thread thread=new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpRequest httpRequest = new HttpRequest();
+
+        //instanciate LoadContactTask
+        //new LoadContactTask().execute();
+
+        return view;
+       
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //instanciate LoadContactTask
+        new LoadContactTask().execute();
+    }
+
+    public class LoadContactTask extends AsyncTask<Void, Void, JSONObject>{
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            HttpRequest httpRequest = new HttpRequest();
+            JSONObject res=null;
+            try {
+                res = httpRequest.getFreundListe(username, password);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject res) {
+            super.onPostExecute(res);
+            if(res!=null){
                 try {
-                    JSONObject res = httpRequest.getFreundListe(username, password);
                     if(res.getInt("MsgType")==1){
                         JSONArray friend=res.getJSONArray("Data");
                         friends =new String[friend.length()];
                         for (int i=0;i<friend.length();i++){
                             friends[i]=friend.get(i).toString();
                         }
+                        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                                android.R.layout.simple_list_item_1, friends);
+                        mListView.setAdapter(adapter);
                     }
-                } catch (Exception e) {
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }else{
+                //
+                Toast.makeText(getActivity(), "Fehler", Toast.LENGTH_SHORT).show();
             }
-        });
-        thread.start();
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+
         }
-            final ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(),
-                    android.R.layout.simple_list_item_1, friends);
-            mListView.setAdapter(adapter);
-
-            return view;
-       
     }
-
-
 }

@@ -78,6 +78,7 @@ public class PalaverMainActivity extends AppCompatActivity {
             public void onClick(View v){
                 Intent intent = new Intent(PalaverMainActivity.this, NewContactActivity.class);
                 startActivity(intent);
+                
 
             }
 
@@ -97,12 +98,16 @@ public class PalaverMainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        sharedPreferences = getSharedPreferences("mobile.paluno.de.palaver.login", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        String userName = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
-        TextView t = (TextView)findViewById(R.id.tbUsername);
-        t.setText(userName.toUpperCase());
+        String username = sharedPreferences.getString("Username", null);
+
+            TextView t = (TextView) findViewById(R.id.tbUsername);
+            t.setText(username.toUpperCase());
+
+
+
 
     }
 
@@ -110,7 +115,7 @@ public class PalaverMainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         if(!checkAbmelden) {
-            editor.putBoolean("mobile.paluno.de.palaver.MainLaden", true);
+            editor.putBoolean("MainLaden", true);
             editor.commit();
         }
 
@@ -126,7 +131,7 @@ public class PalaverMainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(!sharedPreferences.getBoolean("mobile.paluno.de.palaver.Checked", false)){
+        if(!sharedPreferences.getBoolean("Checked", false)){
             abmelden();
         }
 //        Toast.makeText(PalaverMainActivity.this, "onDestroy()", Toast.LENGTH_LONG).show();
@@ -146,11 +151,10 @@ public class PalaverMainActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager){
 
-        sharedPreferences = getSharedPreferences("mobile.paluno.de.palaver.login", MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+        sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
 
-        String username = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
-        String password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
+        String username = sharedPreferences.getString("Username", null);
+        String password = sharedPreferences.getString("Password", null);
 
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
 
