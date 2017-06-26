@@ -113,7 +113,7 @@ public class PalaverLoginActivity extends AppCompatActivity{
         Display display = getWindowManager().getDefaultDisplay();
         final Point size = new Point();
         display.getSize(size);
-        float centerY=size.y/2;
+        float centerY=size.y/3;
         imageView.setY(centerY);
         Animation fadeInAnim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in_animation);
         fadeInAnim.setAnimationListener(new Animation.AnimationListener() {

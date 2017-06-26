@@ -18,8 +18,8 @@ import mobile.paluno.de.palaver.R;
  * Created by wilfried on 21.05.17.
  */
 
-public class ChatsFragment extends Fragment {
-    private static final String TAG = "ChatsFragment";
+public class ChatsTabFragment extends Fragment {
+    private static final String TAG = "ChatsTabFragment";
 
     private ListView mListView;
     private String[] last_chats = new String[]{

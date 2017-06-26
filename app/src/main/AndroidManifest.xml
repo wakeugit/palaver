@@ -17,9 +17,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".controller.PalaverLoginActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".controller.PalaverAuthActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -35,12 +33,13 @@
         <activity
             android:name=".controller.PalaverMainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".controller.NewContactActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
-
-        </activity>
-
+        <activity
+            android:name=".controller.NewContactActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".controller.ChatHistoryActivity"
+            android:label="@string/title_activity_messages"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

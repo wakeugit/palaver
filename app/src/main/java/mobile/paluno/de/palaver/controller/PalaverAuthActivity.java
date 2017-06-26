@@ -51,9 +51,9 @@ public class PalaverAuthActivity extends FragmentActivity {
         final Point size = new Point();
         display.getSize(size);
         float height = size.y;
-        float centerY = height/2;
+        float centerY = height/3;
 //        Toast.makeText(PalaverAuthActivity.this, centerY + " " + imageView.height, Toast.LENGTH_LONG).show();
-        imageView.setY(centerY - 200);
+        imageView.setY(centerY);
 
         final Animation fadeInAnim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in_animation);
         fadeInAnim.setAnimationListener(new Animation.AnimationListener() {

@@ -37,6 +37,7 @@
                     android:fontFamily="sanf-serif-medium"
                     android:text="username"
                     android:textAlignment="viewStart"
+                    android:gravity="start"
                     android:textColor="@android:color/white"
                     android:textSize="20dp"
                     app:textAllCaps="true" />
@@ -71,9 +72,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_margin="16dp"
         android:visibility="invisible"
-        app:srcCompat="@android:drawable/ic_menu_add" />
+        app:srcCompat="@android:drawable/ic_input_add"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/container"

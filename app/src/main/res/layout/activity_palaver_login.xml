@@ -77,38 +77,8 @@
                 android:checked="true"
                 android:text="@string/prompt_stay_sign" />
 
-            <!--<LinearLayout-->
-            <!--android:id="@+id/button_login_register"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="horizontal">-->
 
-            <!--<Button-->
-            <!--android:id="@+id/user_register_button"-->
-            <!--style="?android:textAppearanceSmall"-->
-            <!--android:layout_width="170dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginRight="5dp"-->
-            <!--android:layout_marginTop="16dp"-->
-            <!--android:background="@color/colorPrimary"-->
-            <!--android:text="@string/action_register"-->
-            <!--android:textColor="@color/colorButton"-->
-            <!--android:textStyle="bold" />-->
-
-            <!--<Button-->
-            <!--android:id="@+id/user_sign_in_button"-->
-            <!--style="?android:textAppearanceSmall"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginLeft="5dp"-->
-            <!--android:layout_marginTop="16dp"-->
-            <!--android:background="@color/colorPrimary"-->
-            <!--android:text="@string/action_sign_in"-->
-            <!--android:textColor="@color/colorButton"-->
-            <!--android:textStyle="bold" />-->
-            <!--</LinearLayout>-->
-
-            <RelativeLayout
+          <RelativeLayout
                 android:id="@+id/button_login_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -120,6 +90,7 @@
                     android:layout_width="167dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:layout_marginLeft="16dp"
                     android:background="@color/colorPrimary"
                     android:text="Registrieren"
                     android:textColor="@color/colorButton"
