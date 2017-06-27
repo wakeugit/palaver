@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -21,47 +22,63 @@ import mobile.paluno.de.palaver.model.Message;
 
 public class ChatHistoryActivity extends AppCompatActivity {
 
+    private List<Message> messageList;
+    private ArrayAdapter<Message> adapter;
     private ChatAdapter chatAdapter;
+    private ListView mListView;
+    private ImageButton mImageButton;
+    private EditText mEditText;
+    private TextView mTextView;
+    private Button backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ArrayList<Message> testList = new ArrayList<Message>();
-        testList.add(new Message(true));
-        testList.add(new Message(true));
-        testList.add(new Message(true));
-        testList.add(new Message(true));
-        testList.add(new Message(false));
-        testList.add(new Message(true));
-        testList.add(new Message(true));
-        testList.add(new Message(false));
-        testList.add(new Message(true));
-        testList.add(new Message(false));
-        testList.add(new Message(true));
-        testList.add(new Message(false));
-        testList.add(new Message(true));
+        messageList = new ArrayList<Message>();
+        messageList.add(new Message(true));
+        messageList.add(new Message(true));
+        messageList.add(new Message(true));
+        messageList.add(new Message(true));
+        messageList.add(new Message(false));
+        messageList.add(new Message(true));
+        messageList.add(new Message(true));
+        messageList.add(new Message(false));
+        messageList.add(new Message(true));
+        messageList.add(new Message(false));
+        messageList.add(new Message(true));
+        messageList.add(new Message(false));
+        messageList.add(new Message(true));
 
-        chatAdapter = new ChatAdapter(ChatHistoryActivity.this, 0, testList);
+        adapter = new ChatAdapter(ChatHistoryActivity.this, R.layout.chat_in, messageList);
 
         setContentView(R.layout.activity_palaver_chat);
 
+        //get back button
+        backButton =(Button) findViewById(R.id.btn_back_chat);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         //get the list view, containing the messages
-        ListView mListView = (ListView) findViewById(R.id.msgListView);
-
-
+        mListView = (ListView) findViewById(R.id.msgListView);
 
         //set the friend name
-        TextView friend = (TextView) findViewById(R.id.lbFriend);
+        mTextView = (TextView) findViewById(R.id.lbFriend);
         String name = (String)getIntent().getSerializableExtra("friend");
-        friend.setText(name);
+        mTextView.setText(name);
+
+        mListView.setAdapter(adapter);
 
         //get EditText
-        final EditText editText =(EditText)findViewById(R.id.messageEditText);
+        mEditText =(EditText)findViewById(R.id.messageEditText);
 
         //event, when click the send button
-        ImageButton send = (ImageButton) findViewById(R.id.sendMessageButton);
-        send.setOnClickListener(new View.OnClickListener() {
+        mImageButton= (ImageButton) findViewById(R.id.sendMessageButton);
+        mImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

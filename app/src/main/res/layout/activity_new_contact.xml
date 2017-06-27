@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/toolbar_new_contact"
             android:layout_width="match_parent"
             android:layout_height="@dimen/appbar_height"
             android:background="?attr/colorPrimary"
@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:id="@+id/btn_back"
+                    android:id="@+id/btn_back_newcontact"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@+id/tbTitel"

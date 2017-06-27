@@ -25,6 +25,7 @@ public class NewContactActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private String username=null;
     private String password=null;
+    private Button backButton;
 
 
     // UI references.
@@ -35,7 +36,14 @@ public class NewContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_contact);
 
-
+        //get back button
+        backButton =(Button) findViewById(R.id.btn_back_newcontact);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         //get the shared ressource username and password
         sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);

@@ -37,6 +37,7 @@ public class ContactsTabFragment extends Fragment {
     private String password=null;
 
     private ListView mListView;
+
     private String[] friends;
 
     public ContactsTabFragment(String username, String password){
@@ -101,7 +102,7 @@ public class ContactsTabFragment extends Fragment {
                             friends[i]=friend.get(i).toString();
                         }
                         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                                android.R.layout.simple_list_item_1, friends){
+                                android.R.layout.simple_list_item_1, friends);/*{
                             @Override
                             public View getView(int position, View convertView, ViewGroup parent){
                                 // Get the current item from ListView
@@ -125,7 +126,7 @@ public class ContactsTabFragment extends Fragment {
                                 return view;
                             }
 
-                        };;
+                        };*/
                         mListView.setAdapter(adapter);
 
                     }
