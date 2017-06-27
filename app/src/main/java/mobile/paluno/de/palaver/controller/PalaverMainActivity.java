@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import mobile.paluno.de.palaver.R;
+import mobile.paluno.de.palaver.model.SectionsPageAdapter;
 
 public class PalaverMainActivity extends AppCompatActivity {
     private static final String TAG = "PalaverMainActivity";

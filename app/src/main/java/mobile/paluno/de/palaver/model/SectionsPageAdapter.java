@@ -1,4 +1,4 @@
-package mobile.paluno.de.palaver.controller;
+package mobile.paluno.de.palaver.model;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
