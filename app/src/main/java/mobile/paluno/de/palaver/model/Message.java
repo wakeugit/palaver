@@ -21,6 +21,17 @@ public class Message {
         this.isMine = isMine;
     }
 
+    public Message(boolean mine){
+        /*Default Constructor for testing */
+
+        this.sender = "Eiskalt";
+        this.reciepient = "Mensa";
+        this.mimeType = "text";
+        this.data = "Hallo";
+        this.dateTime = "27.06.2017 14:30";
+        this.isMine = mine;
+    }
+
     public void setSender(String sender) {
         this.sender = sender;
     }

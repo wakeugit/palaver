@@ -12,13 +12,38 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mobile.paluno.de.palaver.R;
+import mobile.paluno.de.palaver.model.ChatAdapter;
+import mobile.paluno.de.palaver.model.Message;
 
 public class ChatHistoryActivity extends AppCompatActivity {
+
+    private ChatAdapter chatAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ArrayList<Message> testList = new ArrayList<Message>();
+        testList.add(new Message(true));
+        testList.add(new Message(true));
+        testList.add(new Message(true));
+        testList.add(new Message(true));
+        testList.add(new Message(false));
+        testList.add(new Message(true));
+        testList.add(new Message(true));
+        testList.add(new Message(false));
+        testList.add(new Message(true));
+        testList.add(new Message(false));
+        testList.add(new Message(true));
+        testList.add(new Message(false));
+        testList.add(new Message(true));
+
+        chatAdapter = new ChatAdapter(ChatHistoryActivity.this, 0, testList);
+
         setContentView(R.layout.activity_palaver_chat);
 
         //get the list view, containing the messages
@@ -39,7 +64,7 @@ public class ChatHistoryActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 
+
             }
         });
 
