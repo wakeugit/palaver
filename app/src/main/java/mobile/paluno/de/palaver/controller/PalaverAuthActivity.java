@@ -20,7 +20,6 @@ public class PalaverAuthActivity extends FragmentActivity {
         setContentView(R.layout.activity_auth);
 
         if (findViewById(R.id.fragment_auth_container) != null) {
-
             // However, if we're being restored from a previous state,
             // then we don't need to do anything and should return or else
             // we could end up with overlapping fragments.
@@ -46,14 +45,14 @@ public class PalaverAuthActivity extends FragmentActivity {
     public void startAnimation() {
         final ImageView imageView = (ImageView) findViewById(R.id.palaver_logo);
         //TODO:
-        //Position muss in der Mitte des Bildschirms starten, hier provisorisch 300
-        Display display = getWindowManager().getDefaultDisplay();
-        final Point size = new Point();
-        display.getSize(size);
-        float height = size.y;
-        float centerY = height/3;
-//        Toast.makeText(PalaverAuthActivity.this, centerY + " " + imageView.height, Toast.LENGTH_LONG).show();
-        imageView.setY(centerY);
+        //Position muss in der Mitte des Bildschirms starten, hier provisorisch 200
+//        Display display = getWindowManager().getDefaultDisplay();
+//        final Point size = new Point();
+//        display.getSize(size);
+//        float height = size.y;
+//        float centerY = height/3;
+////        Toast.makeText(PalaverAuthActivity.this, centerY + " " + imageView.height, Toast.LENGTH_LONG).show();
+//        imageView.setY(centerY);
 
         final Animation fadeInAnim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in_animation);
         fadeInAnim.setAnimationListener(new Animation.AnimationListener() {
@@ -64,26 +63,7 @@ public class PalaverAuthActivity extends FragmentActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                Animation slideUpAnim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_up);
-
-                slideUpAnim.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        findViewById(R.id.fragment_auth_container).setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-
-                imageView.startAnimation(slideUpAnim);
+                findViewById(R.id.fragment_auth_container).setVisibility(View.VISIBLE);
             }
 
             @Override

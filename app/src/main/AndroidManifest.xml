@@ -15,9 +15,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".controller.PalaverLoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <!--<activity-->
+            <!--android:name=".controller.PalaverLoginActivity"-->
+            <!--android:theme="@style/AppTheme.NoActionBar"></activity>-->
         <activity
             android:name=".controller.PalaverAuthActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -32,7 +32,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".controller.PalaverMainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            />
         <activity
             android:name=".controller.NewContactActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>

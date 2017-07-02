@@ -53,7 +53,7 @@ public class PalaverMainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 abmelden();
                 checkAbmelden = true;
-                Intent intent = new Intent(PalaverMainActivity.this, PalaverLoginActivity.class);
+                Intent intent = new Intent(PalaverMainActivity.this, PalaverAuthActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -71,6 +71,7 @@ public class PalaverMainActivity extends AppCompatActivity {
             }
 
         });
+
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager){
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -86,11 +87,11 @@ public class PalaverMainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("mobile.paluno.de.palaver.login", MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        String username = sharedPreferences.getString("Username", null);
-        String password = sharedPreferences.getString("Password", null);
+        String username = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
+        String password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
 
 
         if (username != null && username!="") {
@@ -112,7 +113,7 @@ public class PalaverMainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         if(!checkAbmelden) {
-            editor.putBoolean("MainLaden", true);
+            editor.putBoolean("mobile.paluno.de.palaver.MainLaden", true);
             editor.commit();
         }
 
@@ -128,7 +129,7 @@ public class PalaverMainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(!sharedPreferences.getBoolean("Checked", false)){
+        if(!sharedPreferences.getBoolean("mobile.paluno.de.palaver.Checked", false)){
             abmelden();
         }
 //        Toast.makeText(PalaverMainActivity.this, "onDestroy()", Toast.LENGTH_LONG).show();
@@ -147,11 +148,10 @@ public class PalaverMainActivity extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager){
+        sharedPreferences = getSharedPreferences("mobile.paluno.de.palaver.login", MODE_PRIVATE);
 
-        sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
-
-        String username = sharedPreferences.getString("Username", null);
-        String password = sharedPreferences.getString("Password", null);
+        String username = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
+        String password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
 
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
 

@@ -65,11 +65,12 @@ public class NewContactActivity extends AppCompatActivity {
 
                 String friend = mKontaktnameView.getText().toString();
 
-                View focusView =null;
+                View focusView = null;
 
                 if(TextUtils.isEmpty(friend)){
                     mKontaktnameView.setError(getString(R.string.error_field_required));
-                    focusView=mKontaktnameView;
+                    focusView = mKontaktnameView;
+                    focusView.requestFocus();
                 } else{
                     mAddFriendTask=new AddFriendTask(friend);
                     mAddFriendTask.execute();
