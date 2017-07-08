@@ -31,7 +31,6 @@
                     android:layout_alignLeft="@+id/tbTitel"
                     android:drawableLeft="@drawable/ic_keyboard_arrow_left_white_18dp"
                     android:layout_alignParentLeft="true"
-
                     android:background="@null"/>
 
                 <android.support.v7.widget.AppCompatTextView

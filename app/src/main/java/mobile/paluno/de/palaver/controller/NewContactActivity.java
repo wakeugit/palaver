@@ -64,12 +64,10 @@ public class NewContactActivity extends AppCompatActivity {
                 mKontaktnameView.setError(null);
 
                 String friend = mKontaktnameView.getText().toString();
-
-                View focusView =null;
-
+                
                 if(TextUtils.isEmpty(friend)){
                     mKontaktnameView.setError(getString(R.string.error_field_required));
-                    focusView=mKontaktnameView;
+                    mKontaktnameView.requestFocus();
                 } else{
                     mAddFriendTask=new AddFriendTask(friend);
                     mAddFriendTask.execute();
@@ -148,7 +146,7 @@ public class NewContactActivity extends AppCompatActivity {
                     mKontaktnameView.setError(info);
                     mKontaktnameView.requestFocus();
                 } else
-                    Toast.makeText(NewContactActivity.this, "Fehler", Toast.LENGTH_LONG).show();
+                    Toast.makeText(NewContactActivity.this, "Benutzer existiert nicht", Toast.LENGTH_LONG).show();
             }
         }
 
