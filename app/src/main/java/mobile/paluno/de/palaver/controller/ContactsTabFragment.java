@@ -33,8 +33,8 @@ import mobile.paluno.de.palaver.backend.HttpRequest;
 public class ContactsTabFragment extends Fragment {
     private static final String TAG = "ChatsTabFragment";
 
-    private String username=null;
-    private String password=null;
+    private String username;
+    private String password;
 
     private ListView mListView;
 
@@ -83,7 +83,6 @@ public class ContactsTabFragment extends Fragment {
             JSONObject res=null;
             try {
                 res = httpRequest.getFreundListe(username, password);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -95,9 +94,9 @@ public class ContactsTabFragment extends Fragment {
             super.onPostExecute(res);
             if(res!=null){
                 try {
-                    if(res.getInt("MsgType")==1){
-                        JSONArray friend=res.getJSONArray("Data");
-                        friends =new String[friend.length()];
+                    if(res.getInt("MsgType") == 1){
+                        JSONArray friend = res.getJSONArray("Data");
+                        friends = new String[friend.length()];
                         for (int i=0;i<friend.length();i++){
                             friends[i]=friend.get(i).toString();
                         }

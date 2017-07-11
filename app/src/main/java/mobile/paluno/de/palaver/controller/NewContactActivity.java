@@ -46,11 +46,11 @@ public class NewContactActivity extends AppCompatActivity {
         });
 
         //get the shared ressource username and password
-        sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("mobile.paluno.de.palaver.login", MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        username = sharedPreferences.getString("Username", null);
-        password = sharedPreferences.getString("Password", null);
+        username = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
+        password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
 
         //get the UI reference of the textField name
         mKontaktnameView = (EditText) findViewById(R.id.contact_name);
@@ -59,19 +59,20 @@ public class NewContactActivity extends AppCompatActivity {
         hinzufuegen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 // Reset errors.
                 mKontaktnameView.setError(null);
 
                 String friend = mKontaktnameView.getText().toString();
 
-                View focusView = null;
-
                 if(TextUtils.isEmpty(friend)){
                     mKontaktnameView.setError(getString(R.string.error_field_required));
-                    focusView = mKontaktnameView;
-                    focusView.requestFocus();
-                } else{
+                    mKontaktnameView.requestFocus();
+                } else if (friend.equals(username)){
+                    mKontaktnameView.setError(getString(R.string.error_friend_equals_username));
+                    mKontaktnameView.requestFocus();
+                    mKontaktnameView.setText(friend + " test");
+                }
+                else{
                     mAddFriendTask=new AddFriendTask(friend);
                     mAddFriendTask.execute();
                 }
@@ -100,6 +101,7 @@ public class NewContactActivity extends AppCompatActivity {
             //Verbindung herstellen mit Palaver Server
             HttpRequest httpRequest = new HttpRequest();
 
+            //Nicht sich selbst adden
             try {
                 // Antwort des Palaver Servers
                   res = httpRequest.freundHinzufuegen(username, password, mFriend);
@@ -111,7 +113,6 @@ public class NewContactActivity extends AppCompatActivity {
             int msgType = 0;
             try{
                 msgType = res.getInt("MsgType");
-
             }
             catch (Exception e){
                 return false;

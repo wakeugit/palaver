@@ -1,10 +1,13 @@
 package mobile.paluno.de.palaver.controller;
 
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -12,15 +15,28 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import mobile.paluno.de.palaver.R;
+import mobile.paluno.de.palaver.backend.HttpRequest;
 import mobile.paluno.de.palaver.model.ChatAdapter;
 import mobile.paluno.de.palaver.model.Message;
 
 public class ChatHistoryActivity extends AppCompatActivity {
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+
+    private String friend;
+    private String username;
+    private String password;
+
 
     private List<Message> messageList;
     private ArrayAdapter<Message> adapter;
@@ -35,20 +51,39 @@ public class ChatHistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        sharedPreferences = getSharedPreferences("mobile.paluno.de.palaver.login", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        username = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
+        password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
+        friend = (String)getIntent().getSerializableExtra("friend");
+
+
+        final JSONObject[] json = new JSONObject[1];
+
         messageList = new ArrayList<Message>();
-        messageList.add(new Message(true));
-        messageList.add(new Message(true));
-        messageList.add(new Message(true));
-        messageList.add(new Message(true));
-        messageList.add(new Message(false));
-        messageList.add(new Message(true));
-        messageList.add(new Message(true));
-        messageList.add(new Message(false));
-        messageList.add(new Message(true));
-        messageList.add(new Message(false));
-        messageList.add(new Message(true));
-        messageList.add(new Message(false));
-        messageList.add(new Message(true));
+
+        new Thread((new Runnable() {
+            @Override
+            public void run() {
+                HttpRequest httpRequest = new HttpRequest();
+                try {
+                    json[0] = httpRequest.getChatHistory(username, password, friend);
+                    if (json[0].getInt("MsgType") == 1) {
+                        JSONArray jsonArray = json[0].getJSONArray("Data");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            boolean isMine = false;
+                            JSONObject tmp = (JSONObject)jsonArray.get(i);
+                            if (tmp.getString("Sender").equals(username)) isMine = true;
+                            messageList.add(new Message(tmp.getString("Sender"), tmp.getString("Recipient"), tmp.getString("Data"), isMine));
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            })).start();
+
 
         adapter = new ChatAdapter(ChatHistoryActivity.this, R.layout.chat_in, messageList);
 
@@ -68,8 +103,7 @@ public class ChatHistoryActivity extends AppCompatActivity {
 
         //set the friend name
         mTextView = (TextView) findViewById(R.id.lbFriend);
-        String name = (String)getIntent().getSerializableExtra("friend");
-        mTextView.setText(name);
+        mTextView.setText(friend);
 
         mListView.setAdapter(adapter);
 
@@ -84,8 +118,28 @@ public class ChatHistoryActivity extends AppCompatActivity {
 
             }
         });
-
-
-
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sharedPreferences = getSharedPreferences("mobile.paluno.de.palaver.login", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        username = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
+    }
+
+
+    public class LoadChatHistory extends AsyncTask<Void, Void, Void>{
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
+    }
+
 }

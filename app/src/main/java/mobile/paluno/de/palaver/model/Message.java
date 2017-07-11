@@ -6,28 +6,28 @@ package mobile.paluno.de.palaver.model;
 
 public class Message {
     private String sender;
-    private String reciepient;
+    private String recipient;
     private String mimeType;
     private String data;
     private String dateTime;
     private boolean isMine;
 
-    public Message(String sender, String reciepient, String mimeType, String data, String dateTime, boolean isMine) {
+    public Message(String sender, String recipient, String data, boolean isMine) {
         this.sender = sender;
-        this.reciepient = reciepient;
-        this.mimeType = mimeType;
+        this.recipient = recipient;
+//        this.mimeType = mimeType;
         this.data = data;
-        this.dateTime = dateTime;
+//        this.dateTime = dateTime;
         this.isMine = isMine;
+
     }
 
     public Message(boolean mine){
         /*Default Constructor for testing */
-
         this.sender = "Eiskalt";
-        this.reciepient = "Mensa";
+        this.recipient = "Mensa";
         this.mimeType = "text";
-        this.data = "Hallo";
+        this.data = "Hallo, das ist ein Test aklsjd laksdj l aslkj aslkd jl aksdj lad lkasjd";
         this.dateTime = "27.06.2017 14:30";
         this.isMine = mine;
     }
@@ -37,7 +37,7 @@ public class Message {
     }
 
     public void setReciepient(String reciepient) {
-        this.reciepient = reciepient;
+        this.recipient = reciepient;
     }
 
     public void setMimeType(String mimeType) {
@@ -61,7 +61,7 @@ public class Message {
     }
 
     public String getReciepient() {
-        return reciepient;
+        return recipient;
     }
 
     public String getMimeType() {

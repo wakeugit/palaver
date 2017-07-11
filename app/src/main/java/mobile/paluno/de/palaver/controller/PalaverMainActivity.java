@@ -157,7 +157,7 @@ public class PalaverMainActivity extends AppCompatActivity {
 
         adapter.addFragment(new ChatsTabFragment(), "CHATS");
 
-        adapter.addFragment(new ContactsTabFragment(username,password), "FREUNDE");
+        adapter.addFragment(new ContactsTabFragment(username, password), "FREUNDE");
 
         viewPager.setAdapter(adapter);
     }

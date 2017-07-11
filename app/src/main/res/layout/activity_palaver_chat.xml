@@ -76,11 +76,16 @@
         android:id="@+id/msgListView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/form"
         android:divider="@null"
         android:dividerHeight="0dp"
         android:paddingBottom="10dp"
-        android:text="hello" />
+        android:text="hello"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:transcriptMode="alwaysScroll"
+        android:stackFromBottom="true"
+        android:layout_below="@+id/appbar"
+        android:layout_above="@+id/form" />
 
     <LinearLayout
         android:id="@+id/form"
