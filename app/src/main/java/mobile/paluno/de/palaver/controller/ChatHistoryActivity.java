@@ -58,32 +58,9 @@ public class ChatHistoryActivity extends AppCompatActivity {
         password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
         friend = (String)getIntent().getSerializableExtra("friend");
 
-
-        final JSONObject[] json = new JSONObject[1];
-
         messageList = new ArrayList<Message>();
 
-        new Thread((new Runnable() {
-            @Override
-            public void run() {
-                HttpRequest httpRequest = new HttpRequest();
-                try {
-                    json[0] = httpRequest.getChatHistory(username, password, friend);
-                    if (json[0].getInt("MsgType") == 1) {
-                        JSONArray jsonArray = json[0].getJSONArray("Data");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            boolean isMine = false;
-                            JSONObject tmp = (JSONObject)jsonArray.get(i);
-                            if (tmp.getString("Sender").equals(username)) isMine = true;
-                            messageList.add(new Message(tmp.getString("Sender"), tmp.getString("Recipient"), tmp.getString("Data"), isMine));
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            })).start();
-
+        refreshList();
 
         adapter = new ChatAdapter(ChatHistoryActivity.this, R.layout.chat_in, messageList);
 
@@ -111,22 +88,66 @@ public class ChatHistoryActivity extends AppCompatActivity {
         mEditText =(EditText)findViewById(R.id.messageEditText);
 
         //event, when click the send button
-        mImageButton= (ImageButton) findViewById(R.id.sendMessageButton);
+        mImageButton = (ImageButton) findViewById(R.id.sendMessageButton);
         mImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                sendMsg();
             }
         });
+    }
+
+    private void refreshList(){
+        final JSONObject[] json = new JSONObject[1];
+
+        new Thread((new Runnable() {
+            @Override
+            public void run() {
+                HttpRequest httpRequest = new HttpRequest();
+                try {
+                    json[0] = httpRequest.getChatHistory(username, password, friend);
+                    if (json[0].getInt("MsgType") == 1) {
+                        JSONArray jsonArray = json[0].getJSONArray("Data");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            boolean isMine = false;
+                            JSONObject tmp = (JSONObject)jsonArray.get(i);
+                            if (tmp.getString("Sender").equals(username)) isMine = true;
+                            messageList.add(new Message(tmp.getString("Sender"), tmp.getString("Recipient"), tmp.getString("Data"), isMine));
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        })).start();
+    }
+
+    private void sendMsg(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String data = mEditText.getText().toString();
+                if(!data.equals("")){
+                    HttpRequest httpRequest = new HttpRequest();
+
+                    try {
+                        JSONObject json = httpRequest.sendMsg(username, password, friend, data);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        }).start();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         sharedPreferences = getSharedPreferences("mobile.paluno.de.palaver.login", MODE_PRIVATE);
-        editor = sharedPreferences.edit();
 
         username = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
+        password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
     }
 
 

@@ -184,7 +184,21 @@ public class HttpRequest {
         }
 
 
+        public JSONObject sendMsg(String username, String password, String recipient, String data) throws Exception {
+            JSONObject json = new JSONObject();
 
+            try {
+                json.put("Username", username);
+                json.put("Password", password);
+                json.put("Recipient", recipient);
+                json.put("Mimetype", "text/plain");
+                json.put("Data", data);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return verbindungHerstellen("http://palaver.se.paluno.uni-due.de/api/message/send", json);
+        }
 
 
 
