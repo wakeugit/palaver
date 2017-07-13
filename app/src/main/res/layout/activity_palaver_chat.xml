@@ -53,16 +53,6 @@
                     android:textSize="20dp"
                     app:textAllCaps="true" />
 
-                <Button
-                    android:id="@+id/btAbmelden"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignRight="@+id/tbTitel"
-                    android:drawableRight="@drawable/ic_keyboard_tab_white_24dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_alignParentRight="true"
-                    android:background="@null"/>
-
             </RelativeLayout>
 
 
@@ -106,6 +96,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignTop="@+id/button1"
             android:layout_toLeftOf="@+id/sendMessageButton"
+            android:imeActionId="@+id/send"
+            android:imeActionLabel="Send"
             android:layout_weight="0.72"
             android:ems="10"
             android:maxHeight="80dp" />

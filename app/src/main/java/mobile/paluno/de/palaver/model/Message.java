@@ -19,7 +19,6 @@ public class Message {
         this.data = data;
 //        this.dateTime = dateTime;
         this.isMine = isMine;
-
     }
 
     public Message(boolean mine){

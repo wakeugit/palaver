@@ -29,18 +29,22 @@ public class ChatAdapter extends ArrayAdapter<Message> {
 
     public ChatAdapter(Activity context, int resource, List<Message> objects) {
         super(context, resource, objects);
-        this.activity=context;
-        this.messages=objects;
+        this.activity = context;
+        this.messages = objects;
     }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-       
+        System.out.println(position);
+        System.out.println(convertView);
+        System.out.println(parent);
+
         ViewHolder holder;
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
         int layoutResource = 0; // determined by view type
-        Message chatMessage = getItem(position);
+        Message chatMessage = messages.get(position);
         int viewType = getItemViewType(position);
 
         if (chatMessage.isMine()) {
@@ -49,13 +53,15 @@ public class ChatAdapter extends ArrayAdapter<Message> {
             layoutResource = R.layout.chat_in;
         }
 
-        if (convertView != null) {
-            holder = (ViewHolder) convertView.getTag();
-        } else {
+        //Behebt das Problem mit den falsch positionierten Bubbles
+
+//        if (convertView != null) {
+//            holder = (ViewHolder) convertView.getTag();
+//        } else {
             convertView = inflater.inflate(layoutResource, parent, false);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
-        }
+//        }
 
         //set message content
         holder.msg.setText(chatMessage.getData());

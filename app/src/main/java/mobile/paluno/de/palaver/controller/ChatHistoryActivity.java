@@ -8,7 +8,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -58,7 +60,7 @@ public class ChatHistoryActivity extends AppCompatActivity {
         password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
         friend = (String)getIntent().getSerializableExtra("friend");
 
-        messageList = new ArrayList<Message>();
+        messageList = new ArrayList<>(); //<Message>
 
         refreshList();
 
@@ -93,31 +95,54 @@ public class ChatHistoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sendMsg();
+                mEditText.setText(null);
+            }
+        });
+
+        mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == R.id.send || id == EditorInfo.IME_NULL) {
+                    sendMsg();
+                    mEditText.setText(null);
+                    return true;
+                }
+                return false;
             }
         });
     }
 
     private void refreshList(){
-        final JSONObject[] json = new JSONObject[1];
-
         new Thread((new Runnable() {
             @Override
             public void run() {
                 HttpRequest httpRequest = new HttpRequest();
                 try {
-                    json[0] = httpRequest.getChatHistory(username, password, friend);
-                    if (json[0].getInt("MsgType") == 1) {
-                        JSONArray jsonArray = json[0].getJSONArray("Data");
+                    JSONObject json = httpRequest.getChatHistory(username, password, friend);
+                    if (json.getInt("MsgType") == 1) {
+                        JSONArray jsonArray = json.getJSONArray("Data");
                         for (int i = 0; i < jsonArray.length(); i++) {
                             boolean isMine = false;
                             JSONObject tmp = (JSONObject)jsonArray.get(i);
-                            if (tmp.getString("Sender").equals(username)) isMine = true;
+                            if (tmp.getString("Sender").equals(username))
+                                isMine = true;
                             messageList.add(new Message(tmp.getString("Sender"), tmp.getString("Recipient"), tmp.getString("Data"), isMine));
                         }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                /**
+                    Automatisches aktualisieren der Listview
+                    Neu eignetippte message sofort in der Liste anzeigen
+                 */
+                ChatHistoryActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
             }
         })).start();
     }
@@ -136,6 +161,8 @@ public class ChatHistoryActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
+                    refreshList();
+
                 }
             }
         }).start();
@@ -149,18 +176,4 @@ public class ChatHistoryActivity extends AppCompatActivity {
         username = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
         password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
     }
-
-
-    public class LoadChatHistory extends AsyncTask<Void, Void, Void>{
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            return null;
-        }
-    }
-
 }

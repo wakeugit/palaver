@@ -155,9 +155,10 @@ public class PalaverMainActivity extends AppCompatActivity {
 
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
 
-        adapter.addFragment(new ChatsTabFragment(), "CHATS");
-
         adapter.addFragment(new ContactsTabFragment(username, password), "FREUNDE");
+
+        adapter.addFragment(new ChatsTabFragment(), "[PLACEHOLDER]");
+
 
         viewPager.setAdapter(adapter);
     }
