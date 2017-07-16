@@ -38,7 +38,7 @@ public class DefaultNotificationReceiver extends BroadcastReceiver {
                 .setAutoCancel(true);
 
         NotificationManager manager = (NotificationManager ) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(2000,mBuilder.build()); //TODO 1
+        manager.notify(1,mBuilder.build());
     }
 
 }
