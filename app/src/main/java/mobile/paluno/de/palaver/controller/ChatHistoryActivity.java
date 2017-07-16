@@ -1,5 +1,7 @@
 package mobile.paluno.de.palaver.controller;
 
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,10 +30,12 @@ import java.util.List;
 
 import mobile.paluno.de.palaver.R;
 import mobile.paluno.de.palaver.backend.HttpRequest;
+import mobile.paluno.de.palaver.gcm.InChatNotificationReceiver;
+import mobile.paluno.de.palaver.gcm.NotificationListener;
 import mobile.paluno.de.palaver.model.ChatAdapter;
 import mobile.paluno.de.palaver.model.Message;
 
-public class ChatHistoryActivity extends AppCompatActivity {
+public class ChatHistoryActivity extends AppCompatActivity implements NotificationListener {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
@@ -48,6 +52,9 @@ public class ChatHistoryActivity extends AppCompatActivity {
     private EditText mEditText;
     private TextView mTextView;
     private Button backButton;
+
+    private InChatNotificationReceiver reciever;
+    private boolean reciverRegistered = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +117,8 @@ public class ChatHistoryActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        reciever = new InChatNotificationReceiver(this);
     }
 
     private void refreshList(){
@@ -171,9 +180,53 @@ public class ChatHistoryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+
+
+        if(!reciverRegistered) {
+            IntentFilter filter = new IntentFilter("mobile.paluno.de.palaver.notification");
+            filter.setPriority(1);
+            registerReceiver(reciever,filter);
+            reciverRegistered = true;
+        }
+
         sharedPreferences = getSharedPreferences("mobile.paluno.de.palaver.login", MODE_PRIVATE);
 
         username = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
         password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
     }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(reciverRegistered) {
+            unregisterReceiver(reciever);
+            reciverRegistered = false;
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(reciverRegistered) {
+            unregisterReceiver(reciever);
+            reciverRegistered = false;
+        }
+    }
+
+    @Override
+    public void onNotificationReceived() {
+
+        refreshList();
+
+    }
+
+    @Override
+    public String getChatName() {
+        return friend;
+    }
+
+
 }

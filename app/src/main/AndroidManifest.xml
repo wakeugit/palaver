@@ -70,6 +70,12 @@
             android:name=".gcm.PalaverRegistrationIntentService"
             android:exported="false">
         </service>
+        
+        <receiver android:name=".gcm.DefaultNotificationReceiver" >
+            <intent-filter>
+                <action android:name="mobile.paluno.de.palaver.notification"></action>
+            </intent-filter>
+        </receiver>
 
     </application>
 

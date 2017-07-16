@@ -1,12 +1,13 @@
 package mobile.paluno.de.palaver.gcm;
+import android.content.Intent;
+
 import com.google.android.gms.iid.InstanceIDListenerService;
 
-/**
- * Created by Schwein on 12.07.2017.
- */
 
 public class PalaverInstanceIdListenerService extends InstanceIDListenerService {
 
     public void onTokenRefresh() {
+        Intent tokenIntent = new Intent(this,PalaverRegistrationIntentService.class);
+        startService(tokenIntent);
     }
 }

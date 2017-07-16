@@ -27,6 +27,7 @@ import org.json.JSONObject;
 
 import mobile.paluno.de.palaver.R;
 import mobile.paluno.de.palaver.backend.HttpRequest;
+import mobile.paluno.de.palaver.gcm.PalaverRegistrationIntentService;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -276,6 +277,8 @@ public class SignInFragment extends Fragment {
                 //Erfolgreiche Verbidung, navigieren weiter
                 Intent intent = new Intent(getActivity(), PalaverMainActivity.class);
                 save(mUsername, mPassword);
+                Intent tokenIntent = new Intent(getActivity(), PalaverRegistrationIntentService.class);
+                getActivity().startService(tokenIntent);
                 startActivity(intent);
                 getActivity().finish();
             } else {

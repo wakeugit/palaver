@@ -183,6 +183,22 @@ public class HttpRequest {
             return verbindungHerstellen("http://palaver.se.paluno.uni-due.de/api/message/get", json);
         }
 
+        public JSONObject sendToken(String username, String password, String pushToken ) throws Exception {
+            JSONObject messageBody = new JSONObject();
+
+            try {
+                messageBody.put("Username", username);
+                messageBody.put("Password", password);
+                messageBody.put("PushToken", pushToken );
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return verbindungHerstellen("http://palaver.se.paluno.uni-due.de/api/user/pushtoken",messageBody);
+
+        }
+
 
         public JSONObject sendMsg(String username, String password, String recipient, String data) throws Exception {
             JSONObject json = new JSONObject();
