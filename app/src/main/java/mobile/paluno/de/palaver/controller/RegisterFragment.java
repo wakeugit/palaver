@@ -103,11 +103,11 @@ public class RegisterFragment extends Fragment {
         View focusView = null;
         boolean cancel = false;
 
-        if (getUsernameInUse()) {
+  /*      if (getUsernameInUse()) {
             mUsernameView.setError(getString(R.string.error_existing_username_register));
             focusView = mUsernameView;
             cancel = true;
-        }
+        } */
 
         // Reset errors.
         mUsernameView.setError(null);
@@ -146,11 +146,11 @@ public class RegisterFragment extends Fragment {
             cancel = true;
         }
 
-        if(getUsernameInUse()){
+    /*    if(getUsernameInUse()){
             mUsernameView.setError(getString(R.string.error_existing_username_register));
             focusView = mUsernameView;
             cancel = true;
-        }
+        } */
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -219,9 +219,13 @@ public class RegisterFragment extends Fragment {
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
-                Intent intent = new Intent(getActivity(), PalaverLoginActivity.class);
-                startActivity(intent);
-                getActivity().finish();
+               // Intent intent = new Intent(getActivity(), PalaverLoginActivity.class);
+               // startActivity(intent);
+               // getActivity().finish();
+                SignInFragment signInFragment = new SignInFragment();
+                RegisterFragment.this.getFragmentManager().beginTransaction().replace(R.id.fragment_auth_container, signInFragment,
+                        RegisterFragment.this.getTag())
+                        .addToBackStack(null).commit();
             } else {
                 try {
                     if(res.getInt("MsgType") == 0){
