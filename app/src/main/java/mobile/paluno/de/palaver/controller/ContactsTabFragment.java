@@ -22,9 +22,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 import mobile.paluno.de.palaver.R;
 import mobile.paluno.de.palaver.backend.HttpRequest;
+import mobile.paluno.de.palaver.model.Message;
 
 /**
  * Created by wilfried on 21.05.17.

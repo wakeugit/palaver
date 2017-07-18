@@ -2,6 +2,7 @@ package mobile.paluno.de.palaver.controller;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -10,10 +11,20 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.View;
 
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import mobile.paluno.de.palaver.R;
+import mobile.paluno.de.palaver.backend.HttpRequest;
+import mobile.paluno.de.palaver.model.Message;
 import mobile.paluno.de.palaver.model.SectionsPageAdapter;
 
 public class PalaverMainActivity extends AppCompatActivity {
@@ -32,6 +43,12 @@ public class PalaverMainActivity extends AppCompatActivity {
     //Ist der Button Abmelden gedrückt worden?
     //Dafür da, damit onPause nicht MainLaden auf true setzt
     private Boolean checkAbmelden = false;
+
+    private String username = "";
+    private String password = "";
+
+
+
 
 
     @Override
@@ -87,16 +104,17 @@ public class PalaverMainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+
         sharedPreferences = getSharedPreferences("mobile.paluno.de.palaver.login", MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        String username = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
-        String password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
+        String username1 = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
+        //String password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
 
-
-        if (username != null && username!="") {
+        if (username1 != null && username1!="") {
             TextView t = (TextView) findViewById(R.id.tbUsername);
-            t.setText(username.toUpperCase());
+            t.setText(username1.toUpperCase());
         } else{
             checkAbmelden = true;
             Intent intent = new Intent(PalaverMainActivity.this, PalaverLoginActivity.class);
@@ -104,10 +122,9 @@ public class PalaverMainActivity extends AppCompatActivity {
             finish();
         }
 
-
-
-
     }
+
+
 
     @Override
     protected void onPause() {
@@ -148,19 +165,18 @@ public class PalaverMainActivity extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager){
+
         sharedPreferences = getSharedPreferences("mobile.paluno.de.palaver.login", MODE_PRIVATE);
-
-        String username = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
-        String password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
-
+        username = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
+        password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
-
+        adapter.addFragment(new ChatsTabFragment(username, password), "CHATS");
         adapter.addFragment(new ContactsTabFragment(username, password), "FREUNDE");
-
-        adapter.addFragment(new ChatsTabFragment(), "[PLACEHOLDER]");
 
 
         viewPager.setAdapter(adapter);
     }
+
+
 }
 
