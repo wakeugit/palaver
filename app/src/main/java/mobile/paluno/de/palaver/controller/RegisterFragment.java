@@ -159,7 +159,6 @@ public class RegisterFragment extends Fragment {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            //Toast.makeText(PalaverLoginActivity.this, "Username and password correct", Toast.LENGTH_LONG).show();
 
             mRegisterTask = new UserRegisterTask(username, password);
             mRegisterTask.execute((Void) null);
@@ -219,7 +218,6 @@ public class RegisterFragment extends Fragment {
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
-               // Intent intent = new Intent(getActivity(), PalaverLoginActivity.class);
                // startActivity(intent);
                // getActivity().finish();
                 SignInFragment signInFragment = new SignInFragment();

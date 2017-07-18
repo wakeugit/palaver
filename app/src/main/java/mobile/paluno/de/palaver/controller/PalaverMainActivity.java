@@ -22,9 +22,15 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import com.google.android.gms.gcm.GcmListenerService;
+
 import mobile.paluno.de.palaver.R;
+
 import mobile.paluno.de.palaver.backend.HttpRequest;
 import mobile.paluno.de.palaver.model.Message;
+
+import mobile.paluno.de.palaver.gcm.PalaverGcmListenerService;
+
 import mobile.paluno.de.palaver.model.SectionsPageAdapter;
 
 public class PalaverMainActivity extends AppCompatActivity {
@@ -117,14 +123,13 @@ public class PalaverMainActivity extends AppCompatActivity {
             t.setText(username1.toUpperCase());
         } else{
             checkAbmelden = true;
-            Intent intent = new Intent(PalaverMainActivity.this, PalaverLoginActivity.class);
+            Intent intent = new Intent(PalaverMainActivity.this, PalaverAuthActivity.class);
             startActivity(intent);
             finish();
         }
 
+
     }
-
-
 
     @Override
     protected void onPause() {
@@ -133,14 +138,11 @@ public class PalaverMainActivity extends AppCompatActivity {
             editor.putBoolean("mobile.paluno.de.palaver.MainLaden", true);
             editor.commit();
         }
-
-//        Toast.makeText(PalaverMainActivity.this, "onPause()", Toast.LENGTH_LONG).show();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-//        Toast.makeText(PalaverMainActivity.this, "onStop()", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -149,7 +151,6 @@ public class PalaverMainActivity extends AppCompatActivity {
         if(!sharedPreferences.getBoolean("mobile.paluno.de.palaver.Checked", false)){
             abmelden();
         }
-//        Toast.makeText(PalaverMainActivity.this, "onDestroy()", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -158,8 +159,9 @@ public class PalaverMainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    //Löschen der gespeicherten Daten
+    //Löschen der gespeicherten Daten und abmelden des GCM
     private  void abmelden(){
+        PalaverGcmListenerService.isLoggedIn = false;
         editor.clear();
         editor.commit();
     }
@@ -172,7 +174,6 @@ public class PalaverMainActivity extends AppCompatActivity {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
         adapter.addFragment(new ChatsTabFragment(username, password), "CHATS");
         adapter.addFragment(new ContactsTabFragment(username, password), "FREUNDE");
-
 
         viewPager.setAdapter(adapter);
     }

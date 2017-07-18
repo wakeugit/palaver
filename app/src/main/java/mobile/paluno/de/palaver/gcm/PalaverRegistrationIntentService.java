@@ -37,7 +37,6 @@ public class PalaverRegistrationIntentService extends IntentService {
 
                     HttpRequest request = new HttpRequest();
                     SharedPreferences sharedPreferences = getSharedPreferences("mobile.paluno.de.palaver.login", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
                     String password = sharedPreferences.getString("mobile.paluno.de.palaver.Password", null);
                     String username = sharedPreferences.getString("mobile.paluno.de.palaver.Username", null);
                     try {
