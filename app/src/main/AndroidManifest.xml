@@ -41,6 +41,42 @@
             android:name=".controller.ChatHistoryActivity"
             android:label="@string/title_activity_messages"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="de.uni_due.paluno.se.palaver" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name=".gcm.PalaverGcmListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".gcm.PalaverInstanceIdListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".gcm.PalaverRegistrationIntentService"
+            android:exported="false">
+        </service>
+        
+        <receiver android:name=".gcm.DefaultNotificationReceiver" >
+            <intent-filter>
+                <action android:name="mobile.paluno.de.palaver.notification"></action>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

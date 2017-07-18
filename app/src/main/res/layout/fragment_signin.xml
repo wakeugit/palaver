@@ -90,7 +90,7 @@
                     android:background="@color/colorPrimary"
                     android:text="@string/action_sign_in"
                     android:textColor="@color/colorButton"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

@@ -22,8 +22,7 @@ public class ChatsTabFragment extends Fragment {
     private static final String TAG = "ChatsTabFragment";
 
     private ListView mListView;
-    private String[] last_chats = new String[]{
-            "Antoine\n Hi!", "Benoit\n Hello..", "Cyril\n Bye", "David\n Bist du da?", "Eloise \n Wo bist du denn?" };
+    private String[] last_chats = new String[]{ };
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
