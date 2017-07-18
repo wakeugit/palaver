@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
+import mobile.paluno.de.palaver.R;
 import mobile.paluno.de.palaver.controller.ChatHistoryActivity;
 
 import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;

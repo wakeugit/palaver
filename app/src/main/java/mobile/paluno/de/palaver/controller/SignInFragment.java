@@ -165,7 +165,6 @@ public class SignInFragment extends Fragment {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            //Toast.makeText(PalaverLoginActivity.this, "Username and password correct", Toast.LENGTH_LONG).show();
 
             mAuthTask = new UserLoginTask(username, password);
             mAuthTask.execute((Void) null);

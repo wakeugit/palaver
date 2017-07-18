@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.gcm.GcmListenerService;
+
 import mobile.paluno.de.palaver.R;
 import mobile.paluno.de.palaver.gcm.PalaverGcmListenerService;
 import mobile.paluno.de.palaver.model.SectionsPageAdapter;
@@ -100,14 +102,10 @@ public class PalaverMainActivity extends AppCompatActivity {
             t.setText(username.toUpperCase());
         } else{
             checkAbmelden = true;
-            Intent intent = new Intent(PalaverMainActivity.this, PalaverLoginActivity.class);
+            Intent intent = new Intent(PalaverMainActivity.this, PalaverAuthActivity.class);
             startActivity(intent);
             finish();
         }
-
-
-
-
     }
 
     @Override
@@ -117,14 +115,11 @@ public class PalaverMainActivity extends AppCompatActivity {
             editor.putBoolean("mobile.paluno.de.palaver.MainLaden", true);
             editor.commit();
         }
-
-//        Toast.makeText(PalaverMainActivity.this, "onPause()", Toast.LENGTH_LONG).show();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-//        Toast.makeText(PalaverMainActivity.this, "onStop()", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -133,7 +128,6 @@ public class PalaverMainActivity extends AppCompatActivity {
         if(!sharedPreferences.getBoolean("mobile.paluno.de.palaver.Checked", false)){
             abmelden();
         }
-//        Toast.makeText(PalaverMainActivity.this, "onDestroy()", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -142,7 +136,7 @@ public class PalaverMainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    //Löschen der gespeicherten Daten
+    //Löschen der gespeicherten Daten und abmelden des GCM
     private  void abmelden(){
         PalaverGcmListenerService.isLoggedIn = false;
         editor.clear();
@@ -159,8 +153,8 @@ public class PalaverMainActivity extends AppCompatActivity {
 
         adapter.addFragment(new ContactsTabFragment(username, password), "FREUNDE");
 
-        adapter.addFragment(new ChatsTabFragment(), "[PLACEHOLDER]");
-
+        //TODO ??
+//        adapter.addFragment(new ChatsTabFragment(), "[PLACEHOLDER]");
 
         viewPager.setAdapter(adapter);
     }

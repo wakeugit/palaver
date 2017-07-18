@@ -34,7 +34,6 @@ public class PalaverGcmListenerService extends GcmListenerService {
         intent.setAction("mobile.paluno.de.palaver.notification");
         intent.putExtra("sender", senderName);
         intent.putExtra("preview", preview);
-        getApplication().sendOrderedBroadcast(intent,null);
-
+        getApplication().sendOrderedBroadcast(intent, null);
     }
 }

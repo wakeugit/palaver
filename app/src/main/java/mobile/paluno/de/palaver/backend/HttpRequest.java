@@ -17,7 +17,6 @@ import java.net.URL;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import mobile.paluno.de.palaver.controller.PalaverLoginActivity;
 
 public class HttpRequest {
 
