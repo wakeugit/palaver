@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import mobile.paluno.de.palaver.R;
+import mobile.paluno.de.palaver.gcm.PalaverGcmListenerService;
 import mobile.paluno.de.palaver.model.SectionsPageAdapter;
 
 public class PalaverMainActivity extends AppCompatActivity {
@@ -143,6 +144,7 @@ public class PalaverMainActivity extends AppCompatActivity {
 
     //Löschen der gespeicherten Daten
     private  void abmelden(){
+        PalaverGcmListenerService.isLoggedIn = false;
         editor.clear();
         editor.commit();
     }

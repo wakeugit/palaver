@@ -18,10 +18,17 @@ import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
 
 public class PalaverGcmListenerService extends GcmListenerService {
 
+    public static boolean isLoggedIn =true;
+
     @Override
     public void onMessageReceived(String s, Bundle bundle) {
+
+        if(!isLoggedIn)
+            return;
+
         String senderName = bundle.getString("sender");
         String preview = bundle.getString("preview");
+
 
         Intent intent = new Intent();
         intent.setAction("mobile.paluno.de.palaver.notification");

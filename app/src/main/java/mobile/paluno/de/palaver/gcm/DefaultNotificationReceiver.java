@@ -20,7 +20,6 @@ public class DefaultNotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        System.out.println("Default");
 
         String senderName = intent.getStringExtra("sender");
         String preview = intent.getStringExtra("preview");
