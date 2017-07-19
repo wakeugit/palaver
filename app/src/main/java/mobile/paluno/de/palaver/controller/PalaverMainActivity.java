@@ -95,6 +95,8 @@ public class PalaverMainActivity extends AppCompatActivity {
 
         });
 
+        addContact.setVisibility(View.INVISIBLE);
+
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager){
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -177,7 +179,6 @@ public class PalaverMainActivity extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
     }
-
 
 }
 

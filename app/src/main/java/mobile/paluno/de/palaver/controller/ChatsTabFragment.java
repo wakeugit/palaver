@@ -18,8 +18,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import mobile.paluno.de.palaver.R;
@@ -41,7 +43,9 @@ public class ChatsTabFragment extends Fragment {
     HashMap<String, Message> history = new HashMap<String, Message>();
     private Set<String> friends ;
 
-    private String[] friend_lastMessage;
+    private List<String> friend_lastMessage ;
+
+    private ArrayAdapter<String> adapter ;
 
     public ChatsTabFragment(String username, String password){
         this.username=username;
@@ -54,7 +58,15 @@ public class ChatsTabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_chats, container, false);
+        friend_lastMessage= new ArrayList<>();
+
+        //refreshListView();
+
+        adapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, friend_lastMessage);
+
         mListView=(ListView) view.findViewById(R.id.listChats) ;
+        mListView.setAdapter(adapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -82,9 +94,9 @@ public class ChatsTabFragment extends Fragment {
     }
 
     public void refreshListView(){
+        friend_lastMessage.clear();
         String key="";
         Message m=null;
-        friend_lastMessage=new String[history.size()];
         friends=history.keySet();
         Iterator<String> it = friends.iterator();
         int i=0;
@@ -95,12 +107,21 @@ public class ChatsTabFragment extends Fragment {
             if(m.isMine())
                 du="Du : ";
 
-            friend_lastMessage[i]=key + "\n  "+du+ m.getData();
+            friend_lastMessage.add(key + "\n  "+du+ m.getData());
 
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, friend_lastMessage);
-        mListView.setAdapter(adapter);
+
+        /**
+         Automatisches aktualisieren der Listview
+         Neu eignetippte message sofort in der Liste anzeigen
+         */
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        });
+
     }
 
     public class LoadMessageTask extends AsyncTask<Void, Void, Message> {
@@ -143,8 +164,8 @@ public class ChatsTabFragment extends Fragment {
             if(message!=null){
                 //put the last message in the hash map
                 history.put(friend, message);
+
                 refreshListView();
-                System.out.println("Message loading finish");
             }
 
         }
@@ -173,18 +194,18 @@ public class ChatsTabFragment extends Fragment {
                         JSONArray friend = res.getJSONArray("Data");
                         LoadMessageTask messageTask[]=new LoadMessageTask[friend.length()];
                         for (int i=0;i<friend.length();i++){
-                            messageTask[i]=new LoadMessageTask(friend.get(i).toString());
-                            messageTask[i].execute();
+                            if(friend.get(i)!=null) {
+                                messageTask[i] = new LoadMessageTask(friend.get(i).toString());
+                                messageTask[i].execute();
+                            }
 
                         }
-
-
-                        System.out.println("Contact loading finish");
 
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }else{
                 //
                 Toast.makeText(getActivity(), "Fehler", Toast.LENGTH_SHORT).show();
