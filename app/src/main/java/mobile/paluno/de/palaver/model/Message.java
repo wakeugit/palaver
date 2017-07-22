@@ -1,5 +1,10 @@
 package mobile.paluno.de.palaver.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 /**
  * Created by wilfried on 27.06.17.
  */
@@ -19,6 +24,26 @@ public class Message {
         this.data = data;
 //        this.dateTime = dateTime;
         this.isMine = isMine;
+    }
+
+    public Message(String sender, String recipient, String data, boolean isMine, String dateTime) {
+        this.sender = sender;
+        this.recipient = recipient;
+//        this.mimeType = mimeType;
+        this.data = data;
+        SimpleDateFormat inFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        inFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date inDate = null;
+        try {
+            inDate = inFormatter.parse(dateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat outFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        outFormatter.setTimeZone(TimeZone.getTimeZone("UTC+01:00"));
+        this.dateTime = outFormatter.format(inDate);
+        this.isMine = isMine;
+        System.out.println("date time : " + this.dateTime);
     }
 
     public Message(boolean mine){

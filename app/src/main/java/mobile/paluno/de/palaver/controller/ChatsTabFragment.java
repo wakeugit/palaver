@@ -1,6 +1,7 @@
 package mobile.paluno.de.palaver.controller;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -26,6 +29,7 @@ import java.util.Set;
 
 import mobile.paluno.de.palaver.R;
 import mobile.paluno.de.palaver.backend.HttpRequest;
+import mobile.paluno.de.palaver.model.ChatAdapter;
 import mobile.paluno.de.palaver.model.Message;
 
 /**
@@ -41,11 +45,14 @@ public class ChatsTabFragment extends Fragment {
     private ListView mListView;
     //get kontaktliste mit letzte Nachrichten
     HashMap<String, Message> history = new HashMap<String, Message>();
+
     private Set<String> friends ;
 
-    private List<String> friend_lastMessage ;
+    private ArrayList<HashMap<String, String>> friend_lastMessage ;
 
-    private ArrayAdapter<String> adapter ;
+    private ArrayAdapter<Message> adapter ;
+    private SimpleAdapter mSchedule ;
+
 
     public ChatsTabFragment(String username, String password){
         this.username=username;
@@ -58,30 +65,30 @@ public class ChatsTabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_chats, container, false);
-        friend_lastMessage= new ArrayList<>();
+        friend_lastMessage= new ArrayList<HashMap<String, String>>();
 
-        //refreshListView();
-
-        adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, friend_lastMessage);
 
         mListView=(ListView) view.findViewById(R.id.listChats) ;
-        mListView.setAdapter(adapter);
+
+        mSchedule = new SimpleAdapter (this.getActivity(), friend_lastMessage, R.layout.chat_entry,
+                new String[] {"contact", "datetime", "msg"}, new int[] {R.id.contact, R.id.datetime, R.id.msg});
+        mListView.setAdapter(mSchedule);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String friend_[]= (mListView.getItemAtPosition(position)).toString().split("\n");
-                String friend_name = friend_[0];
-                Intent intent = new Intent(getActivity(), ChatHistoryActivity.class);
-                intent.putExtra("friend", friend_name);
-                startActivity(intent);
-            }
-        });
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    HashMap<String, String> map = (HashMap<String, String>) mListView.getItemAtPosition(position);
+                    //String friend_[]= (mListView.getItemAtPosition(position)).toString().split("\n");
+                    String friend_name = map.get("contact");
+                    Intent intent = new Intent(getActivity(), ChatHistoryActivity.class);
+                    intent.putExtra("friend", friend_name);
+                    startActivity(intent);
+                }
+            });
 
         return view;
 
-    }
+        }
 
     @Override
     public void onResume() {
@@ -89,38 +96,43 @@ public class ChatsTabFragment extends Fragment {
         //instanciate LoadContactTask
         new LoadContactTask().execute();
 
-
-        //new LoadContactTask().execute();
     }
 
     public void refreshListView(){
         friend_lastMessage.clear();
-        String key="";
+        String contact="";
         Message m=null;
         friends=history.keySet();
         Iterator<String> it = friends.iterator();
         int i=0;
-        String du ="";
-        while(it.hasNext()){
-            key=it.next();
-            m=history.get(key);
+        String du="";
+        while(it.hasNext()) {
+            HashMap<String, String> historyToShow = new HashMap<String, String>();
+            contact=it.next();
+            m=history.get(contact);
+            du="";
             if(m.isMine())
                 du="Du : ";
-
-            friend_lastMessage.add(key + "\n  "+du+ m.getData());
+            historyToShow.put("contact", contact);
+            historyToShow.put("datetime", m.getDateTime());
+            historyToShow.put("msg", du+m.getData());
+            friend_lastMessage.add(historyToShow);
 
         }
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSchedule.notifyDataSetChanged();
+            }
+        });
+
 
         /**
          Automatisches aktualisieren der Listview
          Neu eignetippte message sofort in der Liste anzeigen
          */
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
-            }
-        });
+
 
     }
 
@@ -146,7 +158,7 @@ public class ChatsTabFragment extends Fragment {
                         JSONObject tmp = (JSONObject) jsonArray.get(jsonArray.length()-1);
                         if (tmp.getString("Sender").equals(username))
                             isMine = true;
-                        return new Message(tmp.getString("Sender"), tmp.getString("Recipient"), tmp.getString("Data"), isMine);
+                        return new Message(tmp.getString("Sender"), tmp.getString("Recipient"), tmp.getString("Data"), isMine, tmp.getString("DateTime"));
 
                     }
 

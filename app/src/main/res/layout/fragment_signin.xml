@@ -81,7 +81,7 @@
                 <Button
                     android:id="@+id/user_sign_in_button"
                     style="?android:textAppearanceSmall"
-                    android:layout_width="167dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_alignRight="@+id/register_fragment_button"
                     android:layout_alignParentBottom="true"
